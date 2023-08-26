@@ -1,0 +1,31 @@
+# Workflow запускает:
+# - проверку синтаксиса и code style с помощью модуля flake8 (останавливает выполнение при наличии синтаксических
+#   ошибок)
+# - модульные тесты фреймворка unittest, запускается файл test_runner.py, если файл не найден, запускаются все
+#   найденные тесты.
+
+name: Python task test
+
+on:
+  pull_request:
+    branches: [ "main*" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        # stop the test if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
+    - name: Test with unittest module
+      run: if [ -f test_runner.py ]; then python3 -m unittest test_runner.py; else python3 -m unittest; fi
