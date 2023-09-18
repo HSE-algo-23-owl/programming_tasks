@@ -1,46 +1,63 @@
 import unittest
 
-from main import fibonacci_rec, fibonacci_iter, rabbits
-
-MONTH = 'month'
-LIFETIME = 'lifetime'
-RABBITS = 'rabbits'
-IS_RABBIT_IMPLEMENTED = bool(rabbits(1, 2))
+from main import calculate_determinant
 
 
-class TestFibonacci(unittest.TestCase):
-    """Тесты для проверки функций вычисления числа Фибоначчи"""
-    fibonacci_numbers = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377,
-                         610, 987, 1597, 2584, 4181, 6765, 10946, 17711]
+class TestDeterminant(unittest.TestCase):
+    """Набор тестов для проверки функции вычисления определителя
+    целочисленной квадратной матрицы"""
+    def test_none(self):
+        """Проверяет, что функция выбрасывает исключение при передаче в
+        параметр значения None"""
+        self.assertRaises(Exception, calculate_determinant, None)
 
-    def test_fibonacci_rec(self):
-        """Проверка работы рекурсивной функции вычисления числа Фибоначчи"""
-        for index, number in enumerate(self.fibonacci_numbers):
-            self.assertEqual(fibonacci_rec(index + 1), number)
+    def test_empty_matrix(self):
+        """Проверяет, что функция выбрасывает исключение при передаче в
+        параметр пустого списка"""
+        self.assertRaises(Exception, calculate_determinant, [])
 
-    def test_fibonacci_iter(self):
-        """Проверка работы итеративной функции вычисления числа Фибоначчи"""
-        for index, number in enumerate(self.fibonacci_numbers):
-            self.assertEqual(fibonacci_iter(index + 1), number)
+    def test_first_order(self):
+        """Проверяет расчет определителя для матрицы порядка 1"""
+        matrix = [[1]]
+        self.assertEqual(calculate_determinant(matrix), 1)
 
-    @unittest.skipIf(not IS_RABBIT_IMPLEMENTED,
-                     'Тест не выполняется если функция rabbits не реализована')
-    def test_rabbits(self):
-        """Проверка работы функции расчета количества пар кроликов с
-        установленной продолжительностью жизни"""
-        test_data = [{MONTH: 1, LIFETIME: 2, RABBITS: 1},
-                     {MONTH: 2, LIFETIME: 2, RABBITS: 1},
-                     {MONTH: 3, LIFETIME: 7, RABBITS: 2},
-                     {MONTH: 3, LIFETIME: 8, RABBITS: 2},
-                     {MONTH: 4, LIFETIME: 8, RABBITS: 3},
-                     {MONTH: 5, LIFETIME: 6, RABBITS: 5},
-                     {MONTH: 6, LIFETIME: 8, RABBITS: 8},
-                     {MONTH: 7, LIFETIME: 9, RABBITS: 13},
-                     {MONTH: 8, LIFETIME: 7, RABBITS: 20},
-                     {MONTH: 9, LIFETIME: 9, RABBITS: 34}]
-        for data in test_data:
-            self.assertEqual(data[RABBITS],
-                             rabbits(data[MONTH], data[LIFETIME]))
+    def test_second_order(self):
+        """Проверяет расчет определителя для матрицы порядка 2"""
+        matrix = [[1, 2],
+                  [3, 4]]
+        self.assertEqual(calculate_determinant(matrix), -2)
+
+    def test_third_order(self):
+        """Проверяет расчет определителя для матрицы порядка 3"""
+        matrix = [[1, -2, 3],
+                  [-4, 5, -6],
+                  [7, -8, 9]]
+        self.assertEqual(calculate_determinant(matrix), 0)
+
+    def test_fourth_order(self):
+        """Проверяет расчет определителя для матрицы порядка 4"""
+        matrix = [[3, -3, -5, 8],
+                  [-3, 2, 4, -6],
+                  [2, -5, -7, 5],
+                  [-4, 3, 5, -6]]
+        self.assertEqual(calculate_determinant(matrix), 18)
+
+    def test_not_square_rectangle(self):
+        """Проверяет, что функция выбрасывает исключение при передаче в
+        параметр прямоугольной матрицы"""
+        matrix = [[3, -3, -5, 8],
+                  [-3, 2, 4, -6],
+                  [-4, 3, 5, -6]]
+        self.assertRaises(Exception, calculate_determinant, matrix)
+
+    def test_not_square_jag(self):
+        """Проверяет, что функция выбрасывает исключение при передаче в
+        параметр матрицы с различной длиной строк"""
+        matrix = [[3, -3, -5, 8],
+                  [-3, 2, 4, -6],
+                  [2, -5, -7],
+                  [-4, 3, 5, -6]]
+        self.assertRaises(Exception, calculate_determinant, matrix)
 
 
 if __name__ == '__main__':
