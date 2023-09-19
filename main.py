@@ -2,21 +2,24 @@ import time
 
 
 def fibonacci_rec(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
-
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
-    """
-    pass
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
 
 
 def fibonacci_iter(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована итеративно.
-
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
-    """
-    pass
+    ans = 0
+    first = 1
+    second = 1
+    if n == 1 or n == 2:
+        return 1
+    for i in range(n - 2):
+        ans = first + second
+        first = second
+        second = ans
+    return ans
 
 
 def rabbits(month: int, lifetime: int) -> int:
