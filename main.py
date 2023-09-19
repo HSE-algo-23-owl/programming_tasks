@@ -7,8 +7,11 @@ def fibonacci_rec(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
-
+    if n < 1:
+        raise Exception('Ошибка, n меньше 0')
+    if n < 3:
+        return 1
+    return fibonacci_rec(n-1) + fibonacci_rec(n-2)
 
 def fibonacci_iter(n: int) -> int:
     """Возвращает N-е число Фибоначчи. Реализована итеративно.
@@ -16,7 +19,16 @@ def fibonacci_iter(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    if n < 1:
+        raise Exception('Ошибка, n меньше 0')
+    if n < 3:
+        return 1
+    first = second = 1
+    for _ in range(2,n):
+        first, second = second, first + second
+
+    return second
+
 
 
 def rabbits(month: int, lifetime: int) -> int:
