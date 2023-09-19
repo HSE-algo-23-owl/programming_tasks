@@ -7,7 +7,11 @@ def fibonacci_rec(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
 
 
 def fibonacci_iter(n: int) -> int:
@@ -16,20 +20,59 @@ def fibonacci_iter(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    fib1 = fib2 = 1
+    if n == 1 or n == 2:
+        return 1
+    for i in range(2, n):
+        fib1, fib2 = fib2, fib1 + fib2
+    return fib2
 
 
 def rabbits(month: int, lifetime: int) -> int:
-    """Возвращает количество пар кроликов в популяции на заданный месяц.
-    В начальный момент времени имеется одна пара кроликов. Начиная со второго
-    месяца после рождения кролики производят новую пару кроликов каждый месяц.
-    После достижения предельного возраста кролики умирают.
+    """
+    1 вариант Рекурсивно
 
     :param month: количество месяцев жизни популяции
     :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
     :return: количество пар кроликов
     """
-    pass
+    if lifetime < month and month > 2:
+        return fibonacci_rec(month) - fibonacci_rec(month - lifetime)
+    return fibonacci_rec(month)
+
+
+def rabbits_iter1(month: int, lifetime: int) -> int:
+    """
+    2 вариант Итеративно
+    Вариант с использованием обычных итераций
+
+    :param month: количество месяцев жизни популяции
+    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
+    :return: количество пар кроликов
+    """
+    arr = [1, 1]
+    if month == 1 or month == 2:
+        return 1
+    for i in range(2, month):
+        temp = arr[i - 1] + arr[i - 2]
+        if i >= lifetime:
+            temp -= arr[i - lifetime]
+        arr.append(temp)
+    return arr[-1]
+
+
+def rabbits_iter2(month: int, lifetime: int) -> int:
+    """
+    2 вариант Итеративно
+    Вариант с использованием функции fibonacci_iter
+
+    :param month: количество месяцев жизни популяции
+    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
+    :return: количество пар кроликов
+    """
+    if lifetime < month and month > 2:
+        return fibonacci_iter(month) - fibonacci_iter(month - lifetime)
+    return fibonacci_iter(month)
 
 
 def main():
@@ -50,6 +93,15 @@ def main():
         print(f'при продолжительности жизни кролика {lifetime} месяцев')
         print(rabbits(n, lifetime))
 
+
+# Проверка на дурака не нужна
+"""
+def checking_input_int(number, name_number):
+    if type(number) != int:
+        print(f"Переменная {name_number}, должна принимать числовое значение")
+    elif number < 1:
+        print(f"")
+"""
 
 if __name__ == '__main__':
     main()
