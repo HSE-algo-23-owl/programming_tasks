@@ -1,28 +1,14 @@
 import time
 
-
-def check_number(n):
-    """Проверяем число на входе
-    :param n: вводимое значение
-    :return: True или печатает ошибку"""
-    if type(n) != int:
-        print("Нужно ввести натурально число вообще-то....")
-    elif n < 1:
-        print("Наша программа выводит только положительные числа Фибоначчи")
-    else:
-        return True
-
-
 def fibonacci_rec(n):
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
     :param n: Порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    if check_number(n):
-        if n == 1 or n == 2:
-            return 1
-        return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
-    pass
+    if n == 1 or n == 2:
+        return 1
+    return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
+
 
 
 def fibonacci_iter(n):
@@ -30,26 +16,35 @@ def fibonacci_iter(n):
     :param n: Порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    if check_number(n):
-        if n == 1 or n == 2:
-            return 1
-        numbers_arr = [1] * n
-        for i in range(2, n):
-            numbers_arr[i] = numbers_arr[i - 1] + numbers_arr[i - 2]
-        return numbers_arr[-1]
-    pass
+    if n == 1 or n == 2:
+        return 1
+    numbers_arr = [1] * n
+    for i in range(2, n):
+        numbers_arr[i] = numbers_arr[i - 1] + numbers_arr[i - 2]
+    return numbers_arr[-1]
+
 
 
 def main():
-    n = int(input("Введите порядковый номер числа Фибоначчи - "))
+    while True:
+        try:
+            n = int(input("Введите номер числа Фибоначчи - "))
+        except ValueError:
+            print("Нужно ввести натурально число вообще-то....")
+        else:
+            if n < 1:
+                print("Наша программа выводит только положительные числа Фибоначчи")
+                continue
+            break
+
     print(f'Вычисление {n} числа Фибоначчи рекурсивно:')
     start_time = time.time()
-    print(fibonacci_rec(n))
+    print(fibonacci_rec(int(n)))
     print(f'duration: {time.time() - start_time} seconds')
 
     print(f'\nВычисление {n} числа Фибоначчи итеративно:')
     start_time = time.time()
-    print(fibonacci_iter(n))
+    print(fibonacci_iter(int(n)))
     print(f'duration: {time.time() - start_time} seconds')
 
 
