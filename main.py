@@ -1,5 +1,6 @@
 import time
 
+
 def fibonacci_rec(n):
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
     :param n: Порядковый номер числа Фибоначчи
@@ -8,7 +9,6 @@ def fibonacci_rec(n):
     if n == 1 or n == 2:
         return 1
     return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
-
 
 
 def fibonacci_iter(n):
@@ -24,9 +24,9 @@ def fibonacci_iter(n):
     return numbers_arr[-1]
 
 
-
 def main():
     while True:
+        "Проверка значения на входе"
         try:
             n = int(input("Введите номер числа Фибоначчи - "))
         except ValueError:
@@ -46,7 +46,6 @@ def main():
     start_time = time.time()
     print(fibonacci_iter(int(n)))
     print(f'duration: {time.time() - start_time} seconds')
-
 
 
 if __name__ == '__main__':
