@@ -1,39 +1,45 @@
 import time
 
 
-def fibonacci_rec(n: int) -> int:
+def check_number(n):
+    """Проверяем число на входе"""
+    if type(n) != int:
+        print("Нужно ввести натурально число вообще-то....")
+    elif n < 1:
+        print("Наша программа выводит только положительные числа Фибоначчи")
+    else:
+        return True
+
+
+def fibonacci_rec(n):
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
-
-    :param n: порядковый номер числа Фибоначчи
+    :param n: Порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
+    if check_number(n):
+        if n == 1 or n == 2:
+            return 1
+        return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
     pass
 
 
-def fibonacci_iter(n: int) -> int:
+def fibonacci_iter(n):
     """Возвращает N-е число Фибоначчи. Реализована итеративно.
-
-    :param n: порядковый номер числа Фибоначчи
+    :param n: Порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
-
-
-def rabbits(month: int, lifetime: int) -> int:
-    """Возвращает количество пар кроликов в популяции на заданный месяц.
-    В начальный момент времени имеется одна пара кроликов. Начиная со второго
-    месяца после рождения кролики производят новую пару кроликов каждый месяц.
-    После достижения предельного возраста кролики умирают.
-
-    :param month: количество месяцев жизни популяции
-    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
-    :return: количество пар кроликов
-    """
+    if check_number(n):
+        if n == 1 or n == 2:
+            return 1
+        numbers_arr = [1] * n
+        for i in range(2, n):
+            numbers_arr[i] = numbers_arr[i - 1] + numbers_arr[i - 2]
+        return numbers_arr[-1]
     pass
 
 
 def main():
-    n = 35
+    n = int(input("Введите порядковый номер числа Фибоначчи - "))
     print(f'Вычисление {n} числа Фибоначчи рекурсивно:')
     start_time = time.time()
     print(fibonacci_rec(n))
@@ -44,11 +50,6 @@ def main():
     print(fibonacci_iter(n))
     print(f'duration: {time.time() - start_time} seconds')
 
-    if rabbits(1, 2):
-        lifetime = 5
-        print(f'\nВычисление числа пар кроликов по состоянию на {n} месяц')
-        print(f'при продолжительности жизни кролика {lifetime} месяцев')
-        print(rabbits(n, lifetime))
 
 
 if __name__ == '__main__':
