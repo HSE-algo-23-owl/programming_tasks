@@ -22,7 +22,7 @@ def fibonacci_rec(n):
         return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
     pass
 
-
+'''я люблю питон'''
 def fibonacci_iter(n):
     """Возвращает N-е число Фибоначчи. Реализована итеративно.
     :param n: Порядковый номер числа Фибоначчи
