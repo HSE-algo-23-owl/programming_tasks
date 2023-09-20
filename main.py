@@ -4,7 +4,7 @@ import time
 def check_number(n):
     """Проверяем число на входе
     :param n: вводимое значение
-    :return: True или ошибку"""
+    :return: True или печатает ошибку"""
     if type(n) != int:
         print("Нужно ввести натурально число вообще-то....")
     elif n < 1:
