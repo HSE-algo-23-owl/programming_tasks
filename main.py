@@ -31,15 +31,15 @@ def fibonacci_iter(n: int) -> int:
     if n in (1, 2):
         return 1
 
-    previousNumber = 0
-    currentNumber = 1
+    previous_number = 0
+    current_number = 1
 
     for i in range(n - 1):
-        finalNumber = previousNumber + currentNumber
-        previousNumber = currentNumber
-        currentNumber = finalNumber
+        final_number = previous_number + current_number
+        previous_number = current_number
+        current_number = final_number
 
-    return currentNumber
+    return current_number
     pass
 
 
