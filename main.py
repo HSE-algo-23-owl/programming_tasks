@@ -7,10 +7,13 @@ def fibonacci_rec(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    if n <= 0:
+    if n < 0:
         return Exception('Элемента с таким порядковым номером не существует')
+    if n == 0:
+        return 0
     if n in (1, 2):
         return 1
+
     return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
     pass
 
@@ -21,6 +24,22 @@ def fibonacci_iter(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
+    if n < 0:
+        return Exception('Элемента с таким порядковым номером не существует')
+    if n == 0:
+        return 0
+    if n in (1, 2):
+        return 1
+
+    previousNumber = 0
+    currentNumber = 1
+
+    for i in range(n - 1):
+        finalNumber = previousNumber + currentNumber
+        previousNumber = currentNumber
+        currentNumber = finalNumber
+
+    return currentNumber
     pass
 
 
