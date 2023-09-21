@@ -7,6 +7,11 @@ def fibonacci_rec(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
+    if n <= 0:
+        return Exception('Элемента с таким порядковым номером не существует')
+    if n in (1, 2):
+        return 1
+    return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
     pass
 
 
