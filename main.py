@@ -15,7 +15,6 @@ def fibonacci_rec(n: int) -> int:
         return 1
 
     return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
-    pass
 
 
 def fibonacci_iter(n: int) -> int:
@@ -40,7 +39,6 @@ def fibonacci_iter(n: int) -> int:
         current_number = final_number
 
     return current_number
-    pass
 
 
 def rabbits(month: int, lifetime: int) -> int:
