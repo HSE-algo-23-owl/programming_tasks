@@ -40,41 +40,6 @@ def rabbits(month: int, lifetime: int) -> int:
         return fibonacci_rec(month) - fibonacci_rec(month - lifetime)
     return fibonacci_rec(month)
 
-
-def rabbits_iter1(month: int, lifetime: int) -> int:
-    """
-    2 вариант Итеративно
-    Вариант с использованием обычных итераций
-
-    :param month: количество месяцев жизни популяции
-    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
-    :return: количество пар кроликов
-    """
-    arr = [1, 1]
-    if month == 1 or month == 2:
-        return 1
-    for i in range(2, month):
-        temp = arr[i - 1] + arr[i - 2]
-        if i >= lifetime:
-            temp -= arr[i - lifetime]
-        arr.append(temp)
-    return arr[-1]
-
-
-def rabbits_iter2(month: int, lifetime: int) -> int:
-    """
-    2 вариант Итеративно
-    Вариант с использованием функции fibonacci_iter
-
-    :param month: количество месяцев жизни популяции
-    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
-    :return: количество пар кроликов
-    """
-    if lifetime < month and month > 2:
-        return fibonacci_iter(month) - fibonacci_iter(month - lifetime)
-    return fibonacci_iter(month)
-
-
 def main():
     n = 35
     print(f'Вычисление {n} числа Фибоначчи рекурсивно:')
@@ -93,15 +58,6 @@ def main():
         print(f'при продолжительности жизни кролика {lifetime} месяцев')
         print(rabbits(n, lifetime))
 
-
-# Проверка на дурака не нужна
-"""
-def checking_input_int(number, name_number):
-    if type(number) != int:
-        print(f"Переменная {name_number}, должна принимать числовое значение")
-    elif number < 1:
-        print(f"")
-"""
 
 if __name__ == '__main__':
     main()
