@@ -2,38 +2,38 @@ import time
 
 
 def fibonacci_rec(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
+    if n == 1:
+        return 1
+    elif n == 0:
+        return 0
+    else:
+        return fibonacci_rec(n-1) + fibonacci_rec(n-2)
 
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
-    """
-    pass
 
 
 def fibonacci_iter(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована итеративно.
+    el1,el2 = 0,1
+    if n == 1:
+        return 1
+    elif n == 0:
+        return 0
+    for _ in range(1,n):
+        el1,el2 = el2,el1 + el2
+    return el2
 
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
-    """
-    pass
 
 
 def rabbits(month: int, lifetime: int) -> int:
-    """Возвращает количество пар кроликов в популяции на заданный месяц.
-    В начальный момент времени имеется одна пара кроликов. Начиная со второго
-    месяца после рождения кролики производят новую пару кроликов каждый месяц.
-    После достижения предельного возраста кролики умирают.
-
-    :param month: количество месяцев жизни популяции
-    :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
-    :return: количество пар кроликов
-    """
-    pass
+    if month <= 2:
+        return 1
+    elif month - lifetime <= 0:
+         return rabbits(month-1,lifetime) + rabbits(month-2,lifetime)
+    else:
+        return rabbits(month-1,lifetime) + rabbits(month-2,lifetime) - rabbits(month - lifetime, lifetime)
 
 
 def main():
-    n = 35
+    n = 8
     print(f'Вычисление {n} числа Фибоначчи рекурсивно:')
     start_time = time.time()
     print(fibonacci_rec(n))
@@ -45,7 +45,7 @@ def main():
     print(f'duration: {time.time() - start_time} seconds')
 
     if rabbits(1, 2):
-        lifetime = 5
+        lifetime = 7
         print(f'\nВычисление числа пар кроликов по состоянию на {n} месяц')
         print(f'при продолжительности жизни кролика {lifetime} месяцев')
         print(rabbits(n, lifetime))
