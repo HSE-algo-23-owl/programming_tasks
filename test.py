@@ -37,7 +37,8 @@ class TestFibonacci(unittest.TestCase):
                      {MONTH: 6, LIFETIME: 8, RABBITS: 8},
                      {MONTH: 7, LIFETIME: 9, RABBITS: 13},
                      {MONTH: 8, LIFETIME: 7, RABBITS: 20},
-                     {MONTH: 9, LIFETIME: 9, RABBITS: 34}]
+                     {MONTH: 9, LIFETIME: 9, RABBITS: 34},
+                     {MONTH: 20, LIFETIME: 5, RABBITS: 1631}]
         for data in test_data:
             self.assertEqual(data[RABBITS],
                              rabbits(data[MONTH], data[LIFETIME]))
