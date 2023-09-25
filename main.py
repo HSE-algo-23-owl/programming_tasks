@@ -30,13 +30,9 @@ def rabbits(month: int, lifetime: int) -> int:
     :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
     :return: количество пар кроликов
     """
-    """if (lifetime < 3):
-        return 1
-    elif (lifetime < month):
-        diff = month - lifetime
-        return (2**month - 2**(diff - 1))
-    elif (lifetime >= month):
-        return 2**month"""
+    if lifetime > 2 and lifetime < month:
+        return fibonacci_rec(month) - fibonacci_rec(month - lifetime)
+    return fibonacci_rec(month)
 
 
 def main():
@@ -51,11 +47,11 @@ def main():
     print(fibonacci_iter(n))
     print(f'duration: {time.time() - start_time} seconds')
 
-    """if rabbits(1, 2):
+    if rabbits(1, 2):
         lifetime = 3
         print(f'\nВычисление числа пар кроликов по состоянию на {n} месяц')
         print(f'при продолжительности жизни кролика {lifetime} месяцев')
-        print(rabbits(n, lifetime))"""
+        print(rabbits(n, lifetime))
 
 
 if __name__ == '__main__':
