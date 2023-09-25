@@ -1,17 +1,23 @@
 import time
 
 
+
 def fibonacci_rec(n: int) -> int:
-    if n == 1 or n == 2:
-        return 1
-    return fibonacci_rec(n-1) + fibonacci_rec(n-2)
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
+    if n == 1 or n == 2:
+        return 1
+    return fibonacci_rec(n-1) + fibonacci_rec(n-2)
 
 
 def fibonacci_iter(n: int) -> int:
+    """Возвращает N-е число Фибоначчи. Реализована итеративно.
+
+    :param n: порядковый номер числа Фибоначчи
+    :return: число Фибоначчи
+    """
     fib1 = 1
     fib2 = 1
     if n == 1 or n == 2:
@@ -19,32 +25,25 @@ def fibonacci_iter(n: int) -> int:
     for i in range (2, n):
         fib1, fib2 = fib2, fib2 + fib1
     return fib2
-    """Возвращает N-е число Фибоначчи. Реализована итеративно.
-
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
-    """
-
 
 def rabbits(month: int, lifetime: int) -> int:
-    population = [1, 1]
-    if month == 1 or month == 2:
-        return 1
-    for i in range (2, month):
-        term = population[i - 1] + population[i - 2]
-        if i >= lifetime:
-            term -= population[i - lifetime]
-        population.append(term)
-    return population[month - 1]
     """Возвращает количество пар кроликов в популяции на заданный месяц.
     В начальный момент времени имеется одна пара кроликов. Начиная со второго
     месяца после рождения кролики производят новую пару кроликов каждый месяц.
     После достижения предельного возраста кролики умирают.
-
     :param month: количество месяцев жизни популяции
     :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
     :return: количество пар кроликов
     """
+    if month == 1 or month == 2 or month == 0:
+        return 1
+    elif month <= lifetime:
+        return rabbits(month - 1, lifetime) + rabbits(month - 2, lifetime)
+    else:
+        return rabbits(month - 1, lifetime) + rabbits(month - 2, lifetime) - rabbits (month - lifetime, lifetime)
+
+
+
 
 
 def main():
