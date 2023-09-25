@@ -3,11 +3,13 @@ import time
 
 def fibonacci_rec(n: int) -> int:
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
-
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    if (n==1 or n == 2):
+        return 1
+    elif (n>2):
+        return fibonacci_rec(n-2)+fibonacci_rec(n-1)
 
 
 def fibonacci_iter(n: int) -> int:
@@ -16,7 +18,16 @@ def fibonacci_iter(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    first = 1
+    second = 1
+    result = 0
+    if (n == 1 or n == 2):
+        return 1
+    for i in range (3, n+1):
+        result = first+second
+        first = second
+        second = result
+    return result
 
 
 def rabbits(month: int, lifetime: int) -> int:
@@ -29,11 +40,29 @@ def rabbits(month: int, lifetime: int) -> int:
     :param lifetime: продолжительность жизни кролика, не менее 2 месяцев
     :return: количество пар кроликов
     """
-    pass
+    birthArray =[1,0]
+    lastRabbits = 1
+    nowRabbits = 0
+    newBirth = 0
+    if (month == 1 or month == 2):
+        return 1
+    for i in range(1,month-1):
+        if (lifetime > len(birthArray)):
+            newBirth = birthArray[i]+birthArray[i-1]
+            birthArray.append(newBirth)
+            nowRabbits = lastRabbits+newBirth
+            lastRabbits= nowRabbits
+        else:
+            newBirth = birthArray[i] + birthArray[i - 1] - birthArray[(i+1) - lifetime]
+            birthArray.append(newBirth)
+            nowRabbits = lastRabbits + newBirth
+            lastRabbits = nowRabbits
+    return nowRabbits
 
 
 def main():
     n = 35
+
     print(f'Вычисление {n} числа Фибоначчи рекурсивно:')
     start_time = time.time()
     print(fibonacci_rec(n))
