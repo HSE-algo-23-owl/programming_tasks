@@ -3,7 +3,6 @@ import time
 
 def fibonacci_rec(n: int) -> int:
     """Возвращает N-е число Фибоначчи. Реализована рекурсивно.
-        1  1  2 3 5
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
@@ -78,5 +77,5 @@ def main():
 
 
 if __name__ == '__main__':
-    #main()
-    print(rabbits(4, 8))
+    main()
+
