@@ -1,22 +1,34 @@
-def calculate_determinant(matrix: [[int]]) -> int:
-    """Вычисляет определитель целочисленной квадратной матрицы
+import random
 
-    :param matrix: целочисленная квадратная матрица
-    :raise Exception: если значение параметра не является целочисленной
-    квадратной матрицей
-    :return: значение определителя
+import numpy as np
+import random as rnd
+
+
+MATRIX = 'matrix'
+DET = 'det'
+
+
+def get_random_matrix_and_det(order):
+    """Генерирует случайную квадратную целочисленную матрицу с заранее
+    известным значением определителя.
+
+    :param order: порядок матрицы
+    :raise Exception: если порядок матрицы не является целым числом и порядок
+    меньше 1
+    :return: словарь с ключами matrix, det
     """
     pass
 
 
 def main():
-    matrix = [[1, 2],
-              [3, 4]]
-    print('Матрица')
-    for row in matrix:
-        print(row)
+    n = 10
+    print('Генерация матрицы порядка 10')
+    gen_result = get_random_matrix_and_det(n)
+    [print(row) for row in gen_result[MATRIX]]
+    print('\nОпределитель сгенерированной матрицы равен', gen_result[DET])
 
-    print(f'Определитель матрицы равен {calculate_determinant(matrix)}')
+    print('\nОпределитель, рассчитанный numpy, равен',
+          round(np.linalg.det(np.array(gen_result[MATRIX]))))
 
 
 if __name__ == '__main__':
