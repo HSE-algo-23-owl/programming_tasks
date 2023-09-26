@@ -41,11 +41,11 @@ def check_matrix_exception(matrix):
             raise Exception('Ошибка, матрица не квадратная')
 def get_minor(matrix, row_index, col_index):
     reduced_matrix = []
-    for cur_row_idx, row in enumerate(matrix):
-        if cur_row_idx != row_index:
+    for cur_row_index, row in enumerate(matrix):
+        if cur_row_index != row_index:
             new_row = []
-            for cur_col_idx, col in enumerate(row):
-                if cur_col_idx != col_index:
+            for cur_col_index, col in enumerate(row):
+                if cur_col_index != col_index:
                     new_row.append(col)
             reduced_matrix.append(new_row)
     determinant = calculate_determinant(reduced_matrix)
