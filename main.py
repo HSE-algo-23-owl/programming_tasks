@@ -9,7 +9,7 @@ def calculate_determinant(matrix: [[int]]) -> int:
     check_matrix_exception(matrix)
     if (len(matrix) == 1):
         return matrix[0][0]
-    row_index = 0
+    row_index = get_max_zero_row_index(matrix)
     det = 0
     for col_index in range(len(matrix)):
         if (matrix[row_index][col_index] == 0):
@@ -18,7 +18,18 @@ def calculate_determinant(matrix: [[int]]) -> int:
                 get_minor(matrix, row_index, col_index))
     return det
 
-
+def get_max_zero_row_index(matrix) -> int:
+    buffer = 0
+    max_zero_row_index = 0
+    for row in enumerate(matrix):
+        counter = 0
+        for column in enumerate(row):
+            if column == 0:
+                counter += 1
+        if counter > buffer:
+            buffer = counter
+            max_zero_row_index = row
+    return max_zero_row_index
 def check_matrix_exception(matrix):
     if type(matrix) != list:
         raise Exception('Ошибка, задана не матрица')
