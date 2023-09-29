@@ -10,7 +10,7 @@ def is_suitable_matrix(matrix):
         if None in row:
             raise Exception('У вас None в строке))')
 
-def calculate_minor(matrix, i, j):
+def reduced_matrix(matrix, i, j):
     tmp = []
     bb = []
     for k in range(len(matrix)):
