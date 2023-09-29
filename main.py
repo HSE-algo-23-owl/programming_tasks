@@ -32,7 +32,7 @@ def calculate_determinant(matrix: [[int]]) -> int:
     if len(matrix) == 2:
         return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
     for i in range(len(matrix)):
-        ans += (-1) ** i * matrix[i][0] * calculate_determinant(calculate_minor(matrix, i, 0))
+        ans += (-1) ** i * matrix[i][0] * calculate_determinant(reduced_matrix(matrix, i, 0))
     return ans
 
 
