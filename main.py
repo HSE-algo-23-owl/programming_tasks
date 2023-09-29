@@ -23,6 +23,14 @@ def delete_rows(matrix, ind):
 
 
 def calculate_determinant(matrix):
+    """Вычисляет определитель целочисленной квадратной матрицы
+
+        :param matrix: целочисленная квадратная матрица
+        :raise Exception: если значение параметра не является целочисленной
+        квадратной матрицей
+        :return: значение определителя
+    """
+
     check_matrix_raises_ex(matrix)
     if len(matrix) == 1:
         return matrix[0][0]
