@@ -30,7 +30,6 @@ def calculate_determinant(matrix):
         квадратной матрицей
         :return: значение определителя
     """
-
     check_matrix_raises_ex(matrix)
     if len(matrix) == 1:
         return matrix[0][0]
