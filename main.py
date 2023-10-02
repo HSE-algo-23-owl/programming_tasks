@@ -1,3 +1,8 @@
+def submatrix(matrix, row, col):
+    # Helper function to get the submatrix of a matrix by removing a specific row and column
+    return [row[:col] + row[col + 1:] for row in (matrix[:row] + matrix[row + 1:])]
+
+
 def calculate_determinant(matrix: [[int]]) -> int:
     """Вычисляет определитель целочисленной квадратной матрицы
 
@@ -6,7 +11,25 @@ def calculate_determinant(matrix: [[int]]) -> int:
     квадратной матрицей
     :return: значение определителя
     """
-    pass
+    if len(matrix) == 1 and len(matrix[0]) == 1:
+        return matrix[0][0]
+
+        # Initialize the determinant
+    det = 0
+
+    # Iterate through the first row to calculate the determinant
+    for col in range(len(matrix[0])):
+        # Calculate the cofactor for the current element
+        cofactor = matrix[0][col] * calculate_determinant(submatrix(matrix, 0, col))
+
+        # Alternate signs for each element in the first row
+        if col % 2 == 1:
+            cofactor = -cofactor
+
+        # Add the cofactor to the determinant
+        det += cofactor
+
+    return det
 
 
 def main():
