@@ -31,8 +31,36 @@ def get_random_matrix_and_det(order):
             matrix[a][b] = (rnd.randint(1, 10))
         det *= matrix[a][i]
         i = i + 1
+    if (len(matrix)>2):
+        matrix = mask_matrix(matrix)
     result ={MATRIX: matrix, DET: det}
     return result
+def mask_matrix(matrix)->[[int]]:
+    for i in range(len(matrix)):
+        temp1 =matrix[i]
+        if(i!=len(matrix)-1):
+            tempi = rnd.randint(i+1, len(matrix)-1)
+        else:
+            tempi = rnd.randint(0, len(matrix)-2)
+        temp2 = matrix[tempi]
+        matrix[i]= temp2
+        matrix[tempi] = temp1
+    for j in range(len(matrix)):
+        temp1 =[]
+        if (j != len(matrix)-1):
+            tempj = rnd.randint(j + 1, len(matrix)-1)
+        else:
+            tempj = rnd.randint(0, len(matrix) - 2)
+        temp2 = []
+        for b in range(len(matrix)):
+            temp1.append( matrix[b][j])
+            temp2.append(matrix[b][tempj])
+        for a in range (len(temp1)):
+            matrix[a][j]=temp2[a]
+            matrix[a][tempj] = temp1[a]
+
+    return matrix
+
 
 def main():
     n = 10
