@@ -1,6 +1,7 @@
 import unittest
 
 from main import gcd_recursive, gcd_iterative_slow, gcd_iterative_fast, lcm
+from gcd_generator import GcdGenerator
 
 
 A = 0
@@ -63,6 +64,18 @@ class TestGcd(unittest.TestCase):
             for row in self.long_set:
                 self.assertEqual(row[RESULT], gcd(row[A], row[B]))
 
+    def test_random(self):
+        """Проверка вычисления НОД на случайно сгенерированных примерах"""
+        gcd_gen = GcdGenerator()
+        for gcd in self.gcd_functions:
+            for i in range(10):
+                if gcd == gcd_iterative_fast:
+                    gcd_gen.generate_values(9, 5)
+                else:
+                    gcd_gen.generate_values(3, 2)
+                self.assertEqual(gcd(gcd_gen.a_value, gcd_gen.b_value),
+                                 gcd_gen.gcd_value)
+
 
 class TestLcm(unittest.TestCase):
     """Набор тестов для проверки реализации функции расчета НОК"""
@@ -95,6 +108,14 @@ class TestLcm(unittest.TestCase):
     def test_simple_long(self):
         """Проверка вычисления НОК для относительно больших чисел"""
         self.assertEqual(680386354, lcm(1005002, 1354))
+
+    def test_random(self):
+        """Проверка вычисления НОК на случайно сгенерированных примерах"""
+        gcd_gen = GcdGenerator()
+        for i in range(10):
+            gcd_gen.generate_values()
+            self.assertEqual(lcm(gcd_gen.a_value, gcd_gen.b_value),
+                             gcd_gen.lcm_value)
 
 
 if __name__ == '__main__':
