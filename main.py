@@ -28,7 +28,7 @@ def get_optimal_row_idx(matrix):
     return indmx
 
 
-def calculate_minor(matrix, i, j):
+def calculate_submatrix(matrix, i, j):
     return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
 
@@ -45,7 +45,7 @@ def calculate_determinant(matrix: [[int]]) -> int:
 
     determinant = 0
     for col_idx in range(len(matrix)):
-        determinant += ((-1) ** (col_idx+row_idx)) * matrix[row_idx][col_idx] * calculate_determinant(calculate_minor(matrix, row_idx, col_idx))
+        determinant += ((-1) ** (col_idx+row_idx)) * matrix[row_idx][col_idx] * calculate_determinant(calculate_submatrix(matrix, row_idx, col_idx))
     return determinant
 
 
