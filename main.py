@@ -17,8 +17,22 @@ def get_random_matrix_and_det(order):
     меньше 1
     :return: словарь с ключами matrix, det
     """
-    pass
-
+    if type(order)!= int :
+        raise Exception('Порядок матрицы не является целым числом')
+    elif order<1:
+        raise Exception('Порядок матрицы меньше 1')
+    matrix =[]
+    for i in range (order):
+        matrix.append([0]*order)
+    det = 1
+    i = 0
+    for a in range(order):
+        for b in range(i, order):
+            matrix[a][b] = (rnd.randint(1, 10))
+        det *= matrix[a][i]
+        i = i + 1
+    result ={MATRIX: matrix, DET: det}
+    return result
 
 def main():
     n = 10
