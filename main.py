@@ -35,11 +35,10 @@ def minor_matrix(matrix):
     if len(matrix)>2:
         for b in range(len(matrix)):#столбец
             temp_matrix = copy.deepcopy(matrix)
-            print (temp_matrix)
             for delete in range(len(matrix)):#сторка
                 del temp_matrix[delete][b]
             del temp_matrix[0]
-            if (b+2) % 2 == 0:
+            if b % 2 == 0:
                 res += (matrix[0][b] * minor_matrix(temp_matrix))
             else:
                 res += (matrix[0][b] * (-1 * minor_matrix(temp_matrix)))
