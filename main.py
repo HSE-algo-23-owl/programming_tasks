@@ -1,6 +1,22 @@
 import time
 
 
+def gcd_exception(a, b):
+    if type(a) != int:
+        raise Exception('Значение параметра a не является целым числом')
+    if type(b) != int:
+        raise Exception('Значение параметра b не является целым числом')
+    if a == 0 and b == 0:
+        raise Exception('Значения параметров a и b равны нулю')
+
+
+def lcm_exception(a, b):
+    if type(a) != int or a < 1:
+        raise Exception('Значение параметра a не является натуральным положительным числом')
+    if type(b) != int or b < 1:
+        raise Exception('Значение параметра b не является натуральным положительным числом')
+
+
 def gcd_recursive(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
     Рекурсивная реализация
@@ -11,6 +27,7 @@ def gcd_recursive(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
+    gcd_exception(a, b)
     a = abs(a)
     b = abs(b)
     if a == 0:
@@ -31,6 +48,7 @@ def gcd_iterative_slow(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
+    gcd_exception(a, b)
     a = abs(a)
     b = abs(b)
     while True:
@@ -52,6 +70,7 @@ def gcd_iterative_fast(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
+    gcd_exception(a, b)
     a = abs(a)
     b = abs(b)
     while True:
@@ -72,6 +91,7 @@ def lcm(a: int, b: int) -> int:
     они равны нулю
     :return: значение наименьшего общего кратного
     """
+    lcm_exception(a, b)
     a = abs(a)
     b = abs(b)
     return int((a * b) / gcd_iterative_fast(a, b))
