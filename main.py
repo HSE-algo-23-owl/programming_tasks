@@ -52,7 +52,15 @@ def gcd_iterative_fast(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
+    a = abs(a)
+    b = abs(b)
+    while True:
+        if a == 0 or b == 0:
+            return max(a, b)
+        if a > b:
+            a %= b
+        else:
+            b %= a
 
 
 def lcm(a: int, b: int) -> int:
@@ -64,7 +72,9 @@ def lcm(a: int, b: int) -> int:
     они равны нулю
     :return: значение наименьшего общего кратного
     """
-    pass
+    a = abs(a)
+    b = abs(b)
+    return int((a * b) / gcd_iterative_fast(a, b))
 
 
 def main():
