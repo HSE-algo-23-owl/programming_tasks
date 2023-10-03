@@ -48,7 +48,7 @@ def gcd_iterative_slow(a: int, b: int) -> int:
 
 
 
-def gcd_iterative_fast(a: int, b: int) -> int:
+def gcd_iterative_fast (a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
     Быстрая итеративная реализация
 
