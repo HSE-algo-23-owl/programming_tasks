@@ -57,7 +57,7 @@ def get_optimal_row_idx(matrix):
             maxZeroCounter = count
             optimalRowIdx = i
     return optimalRowIdx
-# Press the green button in the gutter to run the script.
+
 
 def main():
     matrix = [[1, 2],
