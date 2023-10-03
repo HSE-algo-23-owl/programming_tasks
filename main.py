@@ -1,5 +1,5 @@
 import time
-
+import cmath
 
 def gcd_recursive(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
@@ -11,7 +11,17 @@ def gcd_recursive(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
+    valid(a,b)
+    a = abs(a)
+    b = abs(b)
+    if a == b:
+        return a
+    if a * b == 0:
+        return a + b
+    if b > a:
+        return gcd_recursive(a, b - a)
+    if b < a:
+        return gcd_recursive(a - b, b)
 
 
 def gcd_iterative_slow(a: int, b: int) -> int:
@@ -24,8 +34,18 @@ def gcd_iterative_slow(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
-
+    valid(a, b)
+    a = abs(a)
+    b = abs(b)
+    while a * b != 0 and a != b:
+        if a > b:
+            a -= b
+        else:
+            b -= a
+    if a:
+        return a
+    else:
+        return b
 
 def gcd_iterative_fast(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
@@ -37,8 +57,18 @@ def gcd_iterative_fast(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
-
+    valid(a, b)
+    a = abs(a)
+    b = abs(b)
+    while a * b != 0 and a != b:
+        if a > b:
+            a %= b
+        else:
+            b %= a
+    if a:
+        return a
+    else:
+        return b
 
 def lcm(a: int, b: int) -> int:
     """Вычисляет наименьшее общее кратное двух натуральных чисел
@@ -49,7 +79,25 @@ def lcm(a: int, b: int) -> int:
     они равны нулю
     :return: значение наименьшего общего кратного
     """
-    pass
+    valid_lcm(a, b)
+    a = abs(a)
+    b = abs(b)
+    return a * b / gcd_iterative_fast(a,b)
+
+
+def valid(a: int, b:int):
+    if type(a) != int:
+        raise Exception('Значение параметра a не является целым числом');
+    if type(b) != int:
+        raise Exception('Значение параметра b не является целым числом');
+    if a == 0 and b == 0:
+        raise Exception('Значения параметров a и b равны нулю');
+
+def valid_lcm(a: int, b:int):
+    if type(a) != int or a <= 0:
+        raise Exception('Значение параметра a не является натуральным положительным числом');
+    if type(b) != int or b <= 0:
+        raise Exception('Значение параметра b не является натуральным положительным числом');
 
 
 def main():
