@@ -11,7 +11,14 @@ def gcd_recursive(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
+    a = abs(a)
+    b = abs(b)
+    if a == 0:
+        return b
+    elif b == 0:
+        return a
+    else:
+        return gcd_recursive(b, a % b)
 
 
 def gcd_iterative_slow(a: int, b: int) -> int:
