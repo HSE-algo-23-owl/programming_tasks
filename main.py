@@ -1,55 +1,62 @@
 import time
 
 
+def validate(a, b):
+    if type(a) != int or a <= 0:
+        raise Exception('Значение параметра a не является натуральным '
+                        'положительным числом')
+    if type(b) != int or b <= 0:
+        raise Exception('Значение параметра b не является натуральным '
+                        'положительным числом')
+
+
 def gcd_recursive(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
-    Рекурсивная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :raise Exception: если a или b не являются целыми числами или
-    они оба равны нулю
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    Рекурсивная реализация"""
+    validate(a, b)
+    a = abs(a)
+    b = abs(b)
+    if a == b:
+        return a
+    if a * b == 0:
+        return a + b
+    if b > a:
+        a, b = b, a
+    return gcd_recursive(a - b, b)
 
 
 def gcd_iterative_slow(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
-    Медленная итеративная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :raise Exception: если a или b не являются целыми числами или
-    они оба равны нулю
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    Медленная итеративная реализация"""
+    validate(a, b)
+    a = abs(a)
+    b = abs(b)
+    if a * b == 0:
+        return a + b
+    while a != b:
+        if b > a:
+            a, b = b, a
+        a -= b
+    return a
 
 
 def gcd_iterative_fast(a: int, b: int) -> int:
-    """Вычисляет наибольший общий делитель двух целых чисел.
-    Быстрая итеративная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :raise Exception: если a или b не являются целыми числами или
-    они оба равны нулю
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    """Вычисляет наибольший общий делитель двух целых чисел
+    Быстрая итеративная реализация"""
+    validate(a, b)
+    a = abs(a)
+    b = abs(b)
+    while b:
+        a, b = b, a % b
+    return a
 
 
 def lcm(a: int, b: int) -> int:
-    """Вычисляет наименьшее общее кратное двух натуральных чисел
-
-    :param a: натуральное число a
-    :param b: натуральное число b
-    :raise Exception: если a или b не являются натуральными числами или
-    они равны нулю
-    :return: значение наименьшего общего кратного
-    """
-    pass
+    """Вычисляет наименьшее общее кратное двух натуральных чисел"""
+    validate(a, b)
+    a = abs(a)
+    b = abs(b)
+    return (a * b) // gcd_recursive(a, b)
 
 
 def main():
@@ -78,3 +85,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
