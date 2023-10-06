@@ -105,7 +105,7 @@ class GcdGenerator:
             self.__values[A_ONLY_FACTORS] *= random_prime_a
             self.__values[B_ONLY_FACTORS] *= random_prime_b
 
-            for prime in self.__primes:  # проверка на одинаковые множители, которые могли случайно сгенерироваться
-                # пока присутствуют неучтенные общие множители среди значений a_value и b_value
-                while ((self.a_value // self.gcd_value) % prime == 0 and (self.b_value // self.gcd_value) % prime == 0):
-                    self.__values[COMMON_FACTORS] *= prime  # добавление множителя к общему произведению
+        for prime in self.__primes:  # проверка на одинаковые множители, которые могли случайно сгенерироваться
+            # пока присутствуют неучтенные общие множители среди значений a_value и b_value
+            while ((self.a_value // self.gcd_value) % prime == 0 and (self.b_value // self.gcd_value) % prime == 0):
+                self.__values[COMMON_FACTORS] *= prime  # добавление множителя к общему произведению
