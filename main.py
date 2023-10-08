@@ -1,7 +1,14 @@
 import time
 
 
-def validate(a, b):
+def validate_1(a, b):
+    if type(a) != int:
+        raise Exception('Значение параметра a не является целым числом')
+    if type(b) != int:
+        raise Exception('Значение параметра b не является целым числом')
+    if a == 0 and b == 0:
+        raise Exception('Значения параметров a и b равны нулю')
+def validate_2(a, b):
     if type(a) != int or a <= 0:
         raise Exception('Значение параметра a не является натуральным '
                         'положительным числом')
@@ -9,11 +16,10 @@ def validate(a, b):
         raise Exception('Значение параметра b не является натуральным '
                         'положительным числом')
 
-
 def gcd_recursive(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
     Рекурсивная реализация"""
-    validate(a, b)
+    validate_1(a, b)
     a = abs(a)
     b = abs(b)
     if a == b:
@@ -28,7 +34,7 @@ def gcd_recursive(a: int, b: int) -> int:
 def gcd_iterative_slow(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
     Медленная итеративная реализация"""
-    validate(a, b)
+    validate_1(a, b)
     a = abs(a)
     b = abs(b)
     if a * b == 0:
@@ -43,7 +49,7 @@ def gcd_iterative_slow(a: int, b: int) -> int:
 def gcd_iterative_fast(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел
     Быстрая итеративная реализация"""
-    validate(a, b)
+    validate_1(a, b)
     a = abs(a)
     b = abs(b)
     while b:
@@ -53,7 +59,7 @@ def gcd_iterative_fast(a: int, b: int) -> int:
 
 def lcm(a: int, b: int) -> int:
     """Вычисляет наименьшее общее кратное двух натуральных чисел"""
-    validate(a, b)
+    validate_2(a, b)
     a = abs(a)
     b = abs(b)
     return (a * b) // gcd_recursive(a, b)
