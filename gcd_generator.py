@@ -59,19 +59,19 @@ class GcdGenerator:
         """Возвращает число, полученное в результате перемножения простых чисел,
         возведенных в случайную степень. Число имеет как общие, так и различные
         множители с числом b_value"""
-        return self.__values[A_ONLY_FACTORS]
+        return self.__values[A_ONLY_FACTORS] * self.__values[COMMON_FACTORS]
 
     @property
     def b_value(self) -> int:
         """Возвращает число, полученное в результате перемножения простых чисел,
         возведенных в случайную степень. Число имеет как общие, так и различные
         множители с числом a_value"""
-        return self.__values[B_ONLY_FACTORS]
+        return self.__values[B_ONLY_FACTORS] * self.__values[COMMON_FACTORS]
 
     @property
     def lcm_value(self) -> int:
         """Возвращает значение НОК для a_value и b_value"""
-        return int(self.__values[A_ONLY_FACTORS] * self.__values[B_ONLY_FACTORS] / self.__values[COMMON_FACTORS])
+        return int(self.a_value * self.b_value / self.__values[COMMON_FACTORS])
 
     @property
     def max_factor_cnt(self) -> int:
@@ -90,22 +90,18 @@ class GcdGenerator:
         if factor_cnt > self.max_factor_cnt:
             raise Exception(f"Количество простых чисел не должно превышать {self.max_factor_cnt}")
 
-        self.__values = [1, 1, 1]  # сброс данных предыдущих вычислений
+        if max_pow < 1:  # степень не может быть 0, т.к. в этом нет смысла
+            raise Exception("Степень не может быть меньше единицы")
 
-        common_factors_cnt = random.randint(1, factor_cnt-1)  # количество общих множителей
-        for _ in range(common_factors_cnt):  # создание нужного количества множителей
-            self.__values[COMMON_FACTORS] *= random.choice(self.__primes) ** random.randint(1, max_pow)  # выбор
-            # простого числа из кортежа + случайная генерация степени в заданном диапазоне
-        self.__values[A_ONLY_FACTORS] = self.__values[B_ONLY_FACTORS] = self.__values[COMMON_FACTORS] # присваивание
-        # всем значениям общего множителя
+        self.__values = [1, 1, 1]  # сброс значений предыдущих вычислений
 
-        for _ in range(factor_cnt - common_factors_cnt):  # генерация оставшихся отличающихся множителей
-            random_prime_a = random.choice(self.__primes) ** random.randint(1, max_pow)
-            random_prime_b = random.choice(self.__primes) ** random.randint(1, max_pow)
-            self.__values[A_ONLY_FACTORS] *= random_prime_a
-            self.__values[B_ONLY_FACTORS] *= random_prime_b
+        common_factors_cnt = random.randint(1, factor_cnt-1) # генерация количества общих множиетелй
+        for _ in range(common_factors_cnt):
+            self.__values[COMMON_FACTORS] *= random.choice(self.__primes) ** random.randint(1, max_pow)
 
-        for prime in self.__primes:  # проверка на одинаковые множители, которые могли случайно сгенерироваться
-            # пока присутствуют неучтенные общие множители среди значений a_value и b_value
-            while ((self.a_value // self.gcd_value) % prime == 0 and (self.b_value // self.gcd_value) % prime == 0):
-                self.__values[COMMON_FACTORS] *= prime  # добавление множителя к общему произведению
+        shuffled_primes = list(self.__primes)  # новая коллекция, содержащая перемешанные множители
+        random.shuffle(shuffled_primes)
+
+        for _ in range(factor_cnt - common_factors_cnt):  # генерация оставшихся множителей для A и B
+            self.__values[A_ONLY_FACTORS] *= random.choice(shuffled_primes[:len(shuffled_primes) // 2]) ** random.randint(1, max_pow)
+            self.__values[B_ONLY_FACTORS] *= random.choice(shuffled_primes[len(shuffled_primes) // 2 + 1:]) ** random.randint(1, max_pow)
