@@ -1,22 +1,19 @@
-def calculate_determinant(matrix: [[int]]) -> int:
-    """Вычисляет определитель целочисленной квадратной матрицы
+from typing import Any
 
-    :param matrix: целочисленная квадратная матрица
-    :raise Exception: если значение параметра не является целочисленной
-    квадратной матрицей
-    :return: значение определителя
+
+def generate_permutations(items: frozenset[Any]) -> list[Any]:
+    """Генерирует все варианты перестановок элементов указанного множества
+    :param items: неизменяемое множество элементов
+    :raise TypeError: если параметр items не является неизменяемым множеством
+    :return: список перестановок, где каждая перестановка список элементов
+    множества
     """
     pass
 
 
 def main():
-    matrix = [[1, 2],
-              [3, 4]]
-    print('Матрица')
-    for row in matrix:
-        print(row)
-
-    print(f'Определитель матрицы равен {calculate_determinant(matrix)}')
+    items = frozenset([1, 2, 3])
+    print(generate_permutations(items))
 
 
 if __name__ == '__main__':
