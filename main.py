@@ -1,6 +1,20 @@
 import time
 
+def ExceptionGCD(a, b):
+    if type (a) != int:
+        raise Exception('Значение параметра a не является целым числом')
+    if type (b) != int:
+        raise Exception('Значение параметра b не является целым числом')
+    if a==0 and b==0:
+        raise Exception('Значения параметров a и b равны нулю')
 
+def ExceptionLCM(a, b):
+    if type (a) != int or a<1:
+        raise Exception('Значение параметра a не является натуральным '
+                       'положительным числом')
+    if type (b) != int or b<1:
+        raise Exception('Значение параметра b не является натуральным '
+                       'положительным числом')
 def gcd_recursive(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
     Рекурсивная реализация
@@ -11,8 +25,16 @@ def gcd_recursive(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
-
+    ExceptionGCD(a,b)
+    a =abs(a)
+    b= abs(b)
+    if a == b:
+        return a
+    if a*b == 0:
+        return a+b
+    if b >a:
+        a, b= b, a
+    return gcd_recursive(a-b,b)
 
 def gcd_iterative_slow(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
@@ -24,8 +46,16 @@ def gcd_iterative_slow(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
-
+    ExceptionGCD(a, b)
+    a = abs(a)
+    b = abs(b)
+    if a*b == 0:
+        return a+b
+    while a != b:
+        if b > a:
+            a, b = b, a
+        a -= b
+    return a
 
 def gcd_iterative_fast(a: int, b: int) -> int:
     """Вычисляет наибольший общий делитель двух целых чисел.
@@ -37,7 +67,12 @@ def gcd_iterative_fast(a: int, b: int) -> int:
     они оба равны нулю
     :return: значение наибольшего общего делителя
     """
-    pass
+    ExceptionGCD(a, b)
+    a = abs(a)
+    b = abs(b)
+    while b:
+        a, b = b, a % b
+    return a
 
 
 def lcm(a: int, b: int) -> int:
@@ -49,7 +84,10 @@ def lcm(a: int, b: int) -> int:
     они равны нулю
     :return: значение наименьшего общего кратного
     """
-    pass
+    ExceptionLCM(a,b)
+    chisl = a*b
+    znam = gcd_iterative_fast(a,b)
+    return chisl/znam
 
 
 def main():
