@@ -1,14 +1,14 @@
 from typing import Any
 
 
-def is_suitable_values(elements):
+def __is_suitable_values(elements):
     if type(elements) != frozenset:
         raise TypeError('Параметр items не является неизменяемым множеством')
 
 
 def generate_permutations(elements: frozenset[Any]) -> list[Any]:
     """Генерирует все варианты перестановок элементов указанного множества"""
-    is_suitable_values(elements)
+    __is_suitable_values(elements)
     if len(elements) == 1:
         return [list(elements)]
     res = []
