@@ -1,13 +1,22 @@
 from typing import Any
 
 
-def generate_permutations(items: frozenset[Any]) -> list[Any]:
-    """Генерирует все варианты перестановок элементов указанного множества
-    :param items: неизменяемое множество элементов
-    :raise TypeError: если параметр items не является неизменяемым множеством
-    :return: список перестановок, где каждая перестановка список элементов
-    множества
-    """
+def is_suitable_values(elements):
+    if type(elements) != frozenset:
+        raise TypeError('Параметр items не является неизменяемым множеством')
+
+
+def generate_permutations(elements: frozenset[Any]) -> list[Any]:
+    """Генерирует все варианты перестановок элементов указанного множества"""
+    is_suitable_values(elements)
+    if len(elements) == 1:
+        return [list(elements)]
+    res = []
+    for elem in elements:
+        tmp = generate_permutations(frozenset([x for x in elements if x != elem]))
+        for x in tmp:
+            res.append([elem] + list(x))
+    return res
     pass
 
 
