@@ -17,7 +17,6 @@ def generate_permutations(elements: frozenset[Any]) -> list[Any]:
         for x in tmp:
             res.append([elem] + list(x))
     return res
-    pass
 
 
 def main():
