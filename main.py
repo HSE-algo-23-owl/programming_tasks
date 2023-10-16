@@ -38,12 +38,11 @@ def generate_permutations_logic(items: list[Any]) -> list[Any]:
 def generate_permutations(items: frozenset[Any]) -> list[Any]:
     validate_list(items)
     items_list = list(items)
-    result = generate_permutations_logic(items_list)
-    return result
+    return generate_permutations_logic(items_list)
 
 
 def main():
-    items = frozenset([1, 2, 3])
+    items = frozenset([1, 2])
     print(generate_permutations(items))
 
 
