@@ -15,17 +15,14 @@ def generate_permutations(items: frozenset[Any]) -> list[Any]:
     if len(items) == 1:
         x = list(items)
         return [[x[0]]]
-    else:
-        x = list(items)
-        minus_last = generate_permutations(frozenset(x[1:]))
-        perestanovki = []
-        for elem in minus_last:
-            print(minus_last)
-            print(elem)
-            for i in range(len(elem) + 1):
-                one_perest = elem[:i] + [x[0]] + elem[i:]
-                print(elem[:i] + [x[0]] + elem[i:])
-                perestanovki.append(one_perest)
+    x = list(items)
+    minus_last = generate_permutations(frozenset(x[1:]))
+    perestanovki = []
+    for elem in minus_last:
+        for i in range(len(elem) + 1):
+            one_perest = elem[:i] + [x[0]] + elem[i:]
+            print(elem[:i] + [x[0]] + elem[i:])
+            perestanovki.append(one_perest)
 
     return perestanovki
 
