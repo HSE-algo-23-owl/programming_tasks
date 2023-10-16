@@ -12,24 +12,33 @@ def swap(items, i: int, j: int):
     items[j] = temp
 
 
-def generate_permutations_logic(items: list[Any], n: int, result: list[Any]) -> list[Any]:
-    if n == 1:
-        result.append(items.copy())
-    else:
-        for i in range(n):
-            generate_permutations_logic(items, n - 1, result)
-            if n % 2 == 0:
-                swap(items, i, n - 1)
+def generate_permutations_logic(items: list[Any]) -> list[Any]:
+    result = []
+    n = len(items)
+    if n == 0:
+        return result
+    indexes = n * [0]
+    result.append(items.copy())
+    i = 0
+    while i < n:
+        if indexes[i] < i:
+            if i % 2 == 0:
+                swap(items, 0, i)
             else:
-                swap(items, 0, n - 1)
+                swap(items, indexes[i], i)
+            result.append(items.copy())
+            indexes[i] += 1
+            i = 0
+        else:
+            indexes[i] = 0
+            i += 1
     return result
 
 
 def generate_permutations(items: frozenset[Any]) -> list[Any]:
     validate_list(items)
     items_list = list(items)
-    result = []
-    result = generate_permutations_logic(items_list, len(items), result)
+    result = generate_permutations_logic(items_list)
     return result
 
 
