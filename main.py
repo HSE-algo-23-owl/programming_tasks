@@ -9,7 +9,7 @@ def generate_permutations(items: frozenset[Any]) -> list[Any]:
     множества
     """
     if type(items) != frozenset:
-        raise TypeError
+        raise TypeError('Параметр items не является неизменяемым множеством')
     if len(items) == 0:
         return []
     if len(items) == 1:
@@ -19,10 +19,9 @@ def generate_permutations(items: frozenset[Any]) -> list[Any]:
         x = list(items)
         minus_last = generate_permutations(frozenset(x[1:]))
         perestanovki = []
-        #print(perestanovki)
         for elem in minus_last:
-            print('minus', minus_last)
-            print('elem', elem)
+            print(minus_last)
+            print(elem)
             for i in range(len(elem) + 1):
                 one_perest = elem[:i] + [x[0]] + elem[i:]
                 print(elem[:i] + [x[0]] + elem[i:])
