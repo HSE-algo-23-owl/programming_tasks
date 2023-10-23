@@ -1,9 +1,9 @@
 from typing import Any
 
 
-def check_gen_rec(items):
+def check(items: frozenset[Any]):
     if type(items) != frozenset:
-        raise TypeError("Параметр items не является неизменяемым множеством")
+        raise TypeError('Параметр items не является неизменяемым множеством')
 
 
 def generate_permutations(items: frozenset[Any]) -> list[Any]:
@@ -13,25 +13,23 @@ def generate_permutations(items: frozenset[Any]) -> list[Any]:
     :return: список перестановок, где каждая перестановка список элементов
     множества
     """
-    check_gen_rec(items)
+    check(items)
     mylist = list(items)
-    # for perm in helper(mylist): ## выводит в столбик
-    #     print(perm)
     return helper(mylist)
 
 
-def helper(lst):
-    if len(lst) == 0:
+def helper(items: list[Any]) -> list[Any]:
+    if len(items) == 0:
         return []
-    elif len(lst) == 1:
-        return [lst]
+    elif len(items) == 1:
+        return [items]
     else:
         l = []
-        for i in range(len(lst)):
-            cur_elem = lst[i]
-            rest = lst[:i] + lst[i + 1:]
+        for i in range(len(items)):
+            curr = items[i]
+            rest = items[:i] + items[i+1:]
             for perm in helper(rest):
-                l.append([cur_elem] + perm)
+                l.append([curr] + perm)
         return l
 
 
@@ -42,4 +40,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
