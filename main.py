@@ -15,27 +15,21 @@ def generate_permutations(items: frozenset[Any]) -> list[Any]:
     """
     check(items)
     mylist = list(items)
-    return helper(mylist)
+    return helper(mylist, len(items), 0)
 
 
-def helper(items: list[Any]) -> list[Any]:
-    if len(items) == 0:
-        return []
-    elif len(items) == 1:
-        return [items]
-    else:
-        l = []
-        for i in range(len(items)):
-            curr = items[i]
-            rest = items[:i] + items[i+1:]
-            for perm in helper(rest):
-                l.append([curr] + perm)
-        return l
+def helper(elements, n, i):
+    if i == n:
+        print(elements)
+    for j in range(i, n):
+        elements[i], elements[j] = elements[j], elements[i]
+        helper(elements, n, i + 1)
+        elements[i], elements[j] = elements[j], elements[i]
 
 
 def main():
     items = frozenset([1, 2, 3])
-    print(generate_permutations(items))
+    generate_permutations(items)
 
 
 if __name__ == '__main__':
