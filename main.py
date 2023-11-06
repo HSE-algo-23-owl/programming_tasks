@@ -25,9 +25,7 @@ def get_permutations_rec(items):
         pmt.append(current)
         for i in range(len(pmt) - 1):
             change = [x for x in pmt]
-            temporary = change[-1]
-            change[-1] = change[i]
-            change[i] = temporary
+            change[-1], change[i] = change[i], change[-1]
             result.append(change)
     return result
 
