@@ -87,7 +87,6 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
 def main():
     n = 4
     print(f'Количество маршрутов длиной {n} = {get_triangle_path_count(n)}')
-
     n = 30
     k = 20
     print(f'Биномиальный коэффициент (итеративно) при n, k ({n}, {k}) = ',
