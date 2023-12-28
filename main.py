@@ -55,7 +55,8 @@ def calculate_recursion_matrix_determinant(matrix: list[list[int]]) -> list[list
 
 
 def main():
-    print(f'Определитель матрицы - {calculate_determinant(matrix)}')
+    matrix = [[6, 3, 0], [4, 1, -3], [-2, -3, 2]]
+    print(f'Определитель матрицы равен {calculate_determinant(matrix)}')
 
 
 if __name__ == '__main__':
