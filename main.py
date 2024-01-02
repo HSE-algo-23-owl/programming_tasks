@@ -38,7 +38,17 @@ def rabbits(month: int, lifetime: int) -> int:
     :return: количество пар кроликов
     """
 
+
 def rabbits(month: int, lifetime: int) -> int:
+    """if month <= 2:
+        return 1
+    arr_rabbits = [0] * (lifetime - 2) + [1, 1]
+    for elem in range(2, month):
+        arr_rabbits.append(arr_rabbits[-1] + arr_rabbits[-2] - arr_rabbits.pop(0))
+    return arr_rabbits[-1]
+    """
+
+
     arr_rabbits = []
     for elem in range(month):
         if elem < 2:
@@ -47,14 +57,10 @@ def rabbits(month: int, lifetime: int) -> int:
         elif (elem < lifetime) or (lifetime == 0):
             rebbit_two = arr_rabbits[elem - 1] + arr_rabbits[elem - 2]
             arr_rabbits.append(rebbit_two)
-        elif elem == lifetime:
-            rebbit_two = arr_rabbits[elem - 1] + arr_rabbits[elem - 2] - 1
-            arr_rabbits.append(rebbit_two)
         else:
-            rebbit_two = arr_rabbits[elem - 1] + arr_rabbits[elem - 2] - arr_rabbits[elem - (lifetime + 1)]
+            rebbit_two = arr_rabbits[elem - 1] + arr_rabbits[elem - 2] - arr_rabbits[elem - lifetime]
             arr_rabbits.append(rebbit_two)
     return rebbit_two
-
 
 def main():
     n = 8
@@ -68,12 +74,11 @@ def main():
     print(fibonacci_iter(n))
     print(f'duration: {time.time() - start_time} seconds')
 
-    if rabbits(8,5):
-        month = 8
+    if rabbits(5,5):
         lifetime = 5
-        print(f'\nВычисление числа пар кроликов по состоянию на {month} месяц')
+        print(f'\nВычисление числа пар кроликов по состоянию на {n} месяц')
         print(f'при продолжительности жизни кролика {lifetime} месяцев')
-        print(rabbits(month, lifetime))
+        print(rabbits(n, lifetime))
 
 
 if __name__ == '__main__':
