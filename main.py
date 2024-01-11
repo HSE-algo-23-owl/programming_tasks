@@ -17,6 +17,10 @@ def get_random_matrix_and_det(order):
     if type(order) != int or order < 1:
         raise Exception('Error: the order is not an integer or the order less then 1!')
 
+    if order == 1:
+        rnd_vol = random.randint(0, 10)
+        return {MATRIX: [[rnd_vol]], DET: rnd_vol}
+
     determinant = 1
     # создаю пустую квадратную матрицу
     arr = []
@@ -31,12 +35,6 @@ def get_random_matrix_and_det(order):
     for i in range(len(matrix)):
         determinant *= matrix[i][i]
 
-    if order == 1:
-        determinant = matrix[0][0]
-
-    if order == 2:
-        determinant =  matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
-
     matrix = get_change_matrix(matrix)
 
     result = {MATRIX: matrix, DET: determinant}
@@ -44,8 +42,7 @@ def get_random_matrix_and_det(order):
 
 
 def get_change_matrix(matrix):
-    n = len(matrix) - 1
-
+    n = len(matrix)
     print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
 
     for _ in range(n):
@@ -60,14 +57,13 @@ def get_change_matrix(matrix):
 
 
 def get_change_column(matrix, k, m):
-    for i in range(len(matrix) - 1):
+    for i in range(len(matrix)):
         matrix[i][k], matrix[i][m] = matrix[i][m], matrix[i][k]
 
 
 def get_change_rows(matrix, k, m):
-    for i in range(len(matrix) - 1):
-        matrix[k][i], matrix[m][i] = matrix[m][i], matrix[k][i]
-
+    for i in range(len(matrix)):
+        matrix[k], matrix[m] = matrix[m], matrix[k]
 
 def main():
     n = 2
