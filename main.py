@@ -16,47 +16,55 @@ def get_random_matrix_and_det(order):
     """
     if type(order) != int or order < 1:
         raise Exception('Error: the order is not an integer or the order less then 1!')
-    elif order >= 1:
-        determinant = 1
-        # создаю пустую квадратную матрицу
-        arr = []
-        matrix = [[0 for j in range(order)] for i in range(order)]
-        # обхожу матрицу и присваиваю рандомные значения элементам выше главной диагонали
-        for i in range(order):
-            for j in range(i + 1, order):
-                matrix[i][j] = random.randint(1, 10)
-            # Присвоение рандомного числа элементам главной диагонали
-            matrix[i][i] = random.randint(1, 10)
-        # Расчет детерминанта (перемножение элементов главной диагонали)
-        for i in range(len(matrix)):
-            determinant *= matrix[i][i]
 
-        print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
+    determinant = 1
+    # создаю пустую квадратную матрицу
+    arr = []
+    matrix = [[0 for j in range(order)] for i in range(order)]
+    # обхожу матрицу и присваиваю рандомные значения элементам выше главной диагонали
+    for i in range(order):
+        for j in range(i + 1, order):
+            matrix[i][j] = random.randint(1, 10)
+        # Присвоение рандомного числа элементам главной диагонали
+        matrix[i][i] = random.randint(1, 10)
+    # Расчет детерминанта (перемножение элементов главной диагонали)
+    for i in range(len(matrix)):
+        determinant *= matrix[i][i]
 
-        if order == 1:
-           determinant = matrix[0][0]
-
-        for _ in range(order):
-            ind_st = random.choice([x for x in range(order)])
-            ind_trg = random.choice([x for x in range(order) if x != ind_st])
-            get_change_column(matrix, ind_st, ind_trg)
-            ind_st = random.choice([x for x in range(order)])
-            ind_trg = random.choice([x for x in range(order) if x != ind_st])
-            get_change_rows(matrix, ind_st, ind_trg)
+    matrix = get_change_matrix(matrix)
 
     result = {MATRIX: matrix, DET: determinant}
     return result
+
+
+def get_change_matrix(matrix):
+    n = len(matrix) - 1
+
+    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
+
+    for _ in range(n):
+        ind_st = random.choice([x for x in range(n)])
+        ind_trg = random.choice([x for x in range(n) if x != ind_st])
+        get_change_column(matrix, ind_st, ind_trg)
+        ind_st = random.choice([x for x in range(n)])
+        ind_trg = random.choice([x for x in range(n) if x != ind_st])
+        get_change_rows(matrix, ind_st, ind_trg)
+
+    return matrix
+
 
 def get_change_column(matrix, k, m):
     for i in range(len(matrix) - 1):
         matrix[i][k], matrix[i][m] = matrix[i][m], matrix[i][k]
 
+
 def get_change_rows(matrix, k, m):
     for i in range(len(matrix) - 1):
         matrix[k][i], matrix[m][i] = matrix[m][i], matrix[k][i]
 
+
 def main():
-    n = 8
+    n = 2
     print(f"Генерация матрицы порядка {n}")
     gen_result = get_random_matrix_and_det(n)
     print('\nОпределитель сгенерированной матрицы равен', gen_result[DET])
