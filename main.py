@@ -31,6 +31,12 @@ def get_random_matrix_and_det(order):
     for i in range(len(matrix)):
         determinant *= matrix[i][i]
 
+    if order == 1:
+        determinant = matrix[0][0]
+
+    if order == 2:
+        determinant =  matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
     matrix = get_change_matrix(matrix)
 
     result = {MATRIX: matrix, DET: determinant}
