@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import sys
+max_int = sys.maxsize
 INF = float('inf')
 COST = 'cost'
 PATH = 'path'
@@ -5,7 +9,20 @@ PARAM_ERR_MSG = ('Таблица цен не является прямоугол
                  'числовыми значениями')
 
 
-def get_min_cost_path(price_table: list[list[float | int | None]]) ->\
+def __validate_matrix(matrix):
+    if matrix == None or len(matrix) <= 0 or len(matrix[0]) <=0:
+        raise ValueError(PARAM_ERR_MSG)
+    a=set()
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if isinstance(matrix[i][j], str):
+                raise ValueError(PARAM_ERR_MSG)
+        a.add(len(matrix[i]))
+    if len(a) > 1:
+        raise ValueError(PARAM_ERR_MSG)
+
+
+def get_min_cost_path(matrix: list[list[float | int | None]]) ->\
         dict[str: float | None, str: list[tuple[int, int]] | None]:
     """Возвращает путь минимальной стоимости в таблице из правого верхнего угла
     в левый нижний.
@@ -21,13 +38,57 @@ def get_min_cost_path(price_table: list[list[float | int | None]]) ->\
     path - путь, список кортежей с индексами ячеек, или None если пути
     не существует.
     """
-    pass
+    __validate_matrix(matrix)
+    m, n = len(matrix), len(matrix[0])
+    path_matrix = [[0 for _ in range(n)] for _ in range(m)]
+    if matrix[0][0] == None:
+        dict1 = {COST: None, PATH: None}
+        return dict1
+    else:
+        path_matrix[0][0] = matrix[0][0]
+    for i in range(1, n):
+        if matrix[0][i] is None:
+            path_matrix[0][i] = max_int
+        else:
+            path_matrix[0][i] = path_matrix[0][i - 1] + matrix[0][i]
+    for j in range(1, m):
+        if matrix[j][0] is None:
+            path_matrix[j][0] = max_int
+        else:
+            path_matrix[j][0] = path_matrix[j - 1][0] + matrix[j][0]
+    for i in range(1, m):
+        for j in range(1, n):
+            if matrix[i][j] is None:
+                matrix[i][j] = max_int
+            path_matrix[i][j] = min(path_matrix[i - 1][j], path_matrix[i][j - 1]) + matrix[i][j]
+    flag = True
+    i = m - 1
+    j = n - 1
+    a = [(i, j)]
+    while not (i == 0 and j == 0):
+        if path_matrix[i][j - 1] < path_matrix[i - 1][j]:
+            j -= 1
+            a.append((i, j))
+        else:
+            i -= 1
+            a.append((i, j))
+        if i == 0 and j != 0:
+            j -= 1
+            a.append((i, j))
+        if i != 0 and j == 0:
+            i -= 1
+            a.append((i, j))
+    a.reverse()
+    print(path_matrix)
+    if path_matrix[-1][-1] >= max_int:
+        dict1 = {COST: None, PATH: None}
+    else:
+        dict1 = {COST: path_matrix[-1][-1], PATH: a}
+    return dict1
 
 
 def main():
-    table = [[1, 2, 2],
-             [3, None, 2],
-             [None, 1, 2]]
+    table = [[None]]
     print(get_min_cost_path(table))
 
 
