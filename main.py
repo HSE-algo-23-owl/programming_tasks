@@ -84,7 +84,7 @@ def __validate_data_raises_ex(price_table: any):
         case [list() as lst] if not len(lst):  # если вложенные списки пусты
             is_error = True
 
-        case list() as lst:
+        case list() as lst:   # проверка элеметов вложенных списков
             sublist_len = len(lst[0])
 
             for sublist in lst:
