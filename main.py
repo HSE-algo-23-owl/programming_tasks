@@ -87,12 +87,12 @@ def __validate_data_raises_ex(price_table: any):
         case list() as lst:   # проверка элеметов вложенных списков
             sublist_len = len(lst[0])
 
-            for sublist in lst:
+            for sublist in lst:  # итерация по строкам списка
                 if sublist_len != len(sublist):
                     is_error = True
                     break
 
-                for item in sublist:
+                for item in sublist:  # итерация по элементам строки
                     if isinstance(item, str) or item is None:
                         is_error = True
                         break
