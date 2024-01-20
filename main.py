@@ -21,10 +21,11 @@ def get_path_count(allow_table: list[list[int]]) -> int:
 def __validate_params_raises_ex(allow_table):
     if allow_table == [] or allow_table == [[]] or allow_table == None:
         raise ValueError(PARAM_ERR_MSG)
-    incorrect_values = [-1, 1.1, 2, None, 'str', []]
     for row in allow_table:
         for element in row:
-            if element in incorrect_values:
+            if element == 1 or element == 0:
+                continue
+            else:
                 raise ValueError(PARAM_ERR_MSG)
     if not all(len(row) == len(allow_table[0]) for row in allow_table):
         raise ValueError(PARAM_ERR_MSG)
