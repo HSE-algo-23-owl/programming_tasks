@@ -93,6 +93,7 @@ def __get_cost_tbl(price_table):
 
 
 def main():
+
     table = [[1, 2, 2],
              [3, None, 2],
              [None, 1, 2]]
