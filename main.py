@@ -13,7 +13,35 @@ def get_path_count(allow_table: list[list[int]]) -> int:
     со значениями 0 1.
     :return: количество путей.
     """
-    pass
+    __validate_params_raises_ex(allow_table)
+    path_cnt_tbl = __get_path_cnt_tbl(allow_table)
+    return path_cnt_tbl[-1][-1]
+
+
+def __validate_params_raises_ex(allow_table):
+    if not allow_table or allow_table == [[]]:
+        raise ValueError(PARAM_ERR_MSG)
+    for line in allow_table:
+        for elem in line:
+            if elem != 1 and elem != 0:
+                raise ValueError(PARAM_ERR_MSG)
+    if not all(len(line) == len(allow_table[0]) for line in allow_table):
+        raise ValueError(PARAM_ERR_MSG)
+
+
+def __get_path_cnt_tbl(allow_table):
+    col_cnt = len(allow_table[0]) + 1
+    row_cnt = len(allow_table) + 1
+    path_cnt_tbl = [[0] * col_cnt for _ in range(row_cnt)]
+    path_cnt_tbl[1][1] = allow_table[0][0]
+    for row_idx in range(1, row_cnt):
+        for col_idx in range(1, col_cnt):
+            if row_idx == col_idx == 1:
+                continue
+            if allow_table[row_idx - 1][col_idx - 1] == 0:
+                continue
+            path_cnt_tbl[row_idx][col_idx] = (path_cnt_tbl[row_idx - 1][col_idx] + path_cnt_tbl[row_idx][col_idx - 1])
+    return path_cnt_tbl
 
 
 def main():
