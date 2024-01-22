@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sys
 max_int = sys.maxsize
-INF = float('inf')
 COST = 'cost'
 PATH = 'path'
 PARAM_ERR_MSG = ('Таблица цен не является прямоугольной матрицей с '
@@ -62,24 +61,23 @@ def get_min_cost_path(matrix: list[list[float | int | None]]) ->\
                 matrix[i][j] = max_int
             path_matrix[i][j] = min(path_matrix[i - 1][j], path_matrix[i][j - 1]) + matrix[i][j]
     flag = True
-    i = m - 1
-    j = n - 1
-    a = [(i, j)]
-    while not (i == 0 and j == 0):
-        if path_matrix[i][j - 1] < path_matrix[i - 1][j]:
-            j -= 1
-            a.append((i, j))
+    row= m - 1
+    colummn = n - 1
+    a = [(row, colummn)]
+    while not (row == 0 and colummn == 0):
+        if path_matrix[row][colummn - 1] < path_matrix[row - 1][colummn]:
+            colummn -= 1
+            a.append((row, colummn))
         else:
-            i -= 1
-            a.append((i, j))
-        if i == 0 and j != 0:
-            j -= 1
-            a.append((i, j))
-        if i != 0 and j == 0:
-            i -= 1
-            a.append((i, j))
+            row -= 1
+            a.append((row, colummn))
+        if row == 0 and colummn != 0:
+            colummn -= 1
+            a.append((row, colummn))
+        if row != 0 and colummn == 0:
+            row -= 1
+            a.append((row, colummn))
     a.reverse()
-    print(path_matrix)
     if path_matrix[-1][-1] >= max_int:
         dict1 = {COST: None, PATH: None}
     else:
