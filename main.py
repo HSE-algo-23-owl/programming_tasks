@@ -70,15 +70,16 @@ def __get_path_back(cost_tbl):
 
 
 def __get_cost_tbl(price_table):
-    for i in range(len(price_table)):
-        for j in range(len(price_table[i])):
-            if price_table[i][j] is None:
-                price_table[i][j] = INF
-    col_cnt = len(price_table[0]) + 1
-    row_cnt = len(price_table) + 1
+    table = price_table.copy()
+    for i in range(len(table)):
+        for j in range(len(table[i])):
+            if table[i][j] is None:
+                table[i][j] = INF
+    col_cnt = len(table[0]) + 1
+    row_cnt = len(table) + 1
     cost_tbl = [[INF] * col_cnt for _ in range(row_cnt)]
 
-    cost_tbl[1][1] = price_table[0][0]
+    cost_tbl[1][1] = table[0][0]
 
     for row_idx in range(1, row_cnt):
         for col_idx in range(1, col_cnt):
@@ -86,7 +87,7 @@ def __get_cost_tbl(price_table):
                 continue
             cost_up = cost_tbl[row_idx - 1][col_idx]
             cost_left = cost_tbl[row_idx][col_idx - 1]
-            cost_tbl[row_idx][col_idx] = price_table[row_idx - 1][col_idx - 1] + min(cost_up, cost_left)
+            cost_tbl[row_idx][col_idx] = table[row_idx - 1][col_idx - 1] + min(cost_up, cost_left)
 
     return cost_tbl
 
