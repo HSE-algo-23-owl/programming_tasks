@@ -60,7 +60,6 @@ def get_min_cost_path(matrix: list[list[float | int | None]]) ->\
             if matrix[i][j] is None:
                 matrix[i][j] = max_int
             path_matrix[i][j] = min(path_matrix[i - 1][j], path_matrix[i][j - 1]) + matrix[i][j]
-    flag = True
     row= m - 1
     colummn = n - 1
     a = [(row, colummn)]
