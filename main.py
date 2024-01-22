@@ -25,11 +25,6 @@ def get_min_cost_path(price_table: list[list[float | int | None]]) -> \
 
     if price_table[0][0] is None:
         return {COST: None, PATH: None}
-
-    for i in range(len(price_table)):
-        for j in range(len(price_table[i])):
-            if price_table[i][j] is None:
-                price_table[i][j] = INF
     cost_tbl = __get_cost_tbl(price_table)
     if cost_tbl[-1][-1] == INF:
         return {COST: None, PATH: None}
@@ -75,6 +70,10 @@ def __get_path_back(cost_tbl):
 
 
 def __get_cost_tbl(price_table):
+    for i in range(len(price_table)):
+        for j in range(len(price_table[i])):
+            if price_table[i][j] is None:
+                price_table[i][j] = INF
     col_cnt = len(price_table[0]) + 1
     row_cnt = len(price_table) + 1
     cost_tbl = [[INF] * col_cnt for _ in range(row_cnt)]
