@@ -13,13 +13,27 @@ class ProfitValueError(Exception):
         super().__init__(message)
 
 
-def get_invest_distribution(profit_matrix: list[list[int]]) -> dict[str, int] | dict[str, list[int]]:
+def get_invest_distribution(profit_matrix: list[list[int]]) -> \
+        dict[str: int, str: list[int]]:
+    """Рассчитывает максимально возможную прибыль и распределение инвестиций
+    между несколькими проектами. Инвестиции распределяются кратными частями.
+    :param profit_matrix: Таблица с распределением прибыли от проектов в
+    зависимости от уровня инвестиций. Проекты указаны в столбцах, уровни
+    инвестиций в строках.
+    :raise ValueError: Если таблица прибыли от проектов не является
+    прямоугольной матрицей с числовыми значениями.
+    :raise ProfitValueError: Если значение прибыли отрицательно или убывает
+    с ростом инвестиций.
+    :return: Словарь с ключами:
+    profit - максимально возможная прибыль от инвестиций,
+    distribution - распределение инвестиций между проектами.
+    """
     # Проверка на None, пустой список и некорректные значения
     if profit_matrix is None or len(profit_matrix) == 0 or any(len(row) == 0 for row in profit_matrix):
         raise ValueError(PARAM_ERR_MSG)
     if not all(isinstance(value, int) and value is not None for row in profit_matrix for value in row):
         raise ValueError(PARAM_ERR_MSG)
-
+    pass
 
     for i, row in enumerate(profit_matrix):
         for j, value in enumerate(row):
