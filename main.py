@@ -6,6 +6,7 @@ NEG_PROFIT_ERR_MSG = 'Значение прибыли не может быть �
 DECR_PROFIT_ERR_MSG = 'Значение прибыли не может убывать с ростом инвестиций'
 
 
+
 class ProfitValueError(Exception):
     def __init__(self, message, project_idx, row_idx):
         self.project_idx = project_idx
