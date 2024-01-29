@@ -28,7 +28,46 @@ def get_invest_distribution(profit_matrix: list[list[int]]) -> \
     profit - максимально возможная прибыль от инвестиций,
     distribution - распределение инвестиций между проектами.
     """
-    pass
+    __validate_params_raises_ex(profit_matrix)
+    count_proj = len(profit_matrix[0])
+    count_invest = len(profit_matrix)
+
+    profit = [[0 for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
+    distr = [[0 for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
+
+    for idx1 in range(1, count_proj + 1):
+        for idx2 in range(1, count_invest + 1):
+            max_profit = 0
+            temp = 0
+            for idx3 in range(min(idx2, len(profit_matrix)) + 1):
+                temp_profit = profit_matrix[idx3 - 1][idx1 - 1] + profit[idx1 - 1][idx2 - idx3] if idx3 > 0 else profit[idx1 - 1][idx2]
+                if temp_profit > max_profit:
+                    max_profit = temp_profit
+                    temp = idx3
+            profit[idx1][idx2] = max_profit
+            distr[idx1][idx2] = temp
+
+    remaining_money = count_invest
+    total_distr = [0] * count_proj
+    for idx in range(count_proj, 0, -1):
+        total_distr[idx - 1] = distr[idx][remaining_money]
+        remaining_money -= total_distr[idx - 1]
+
+    return {PROFIT: profit[count_proj][count_invest], DISTRIBUTION: total_distr}
+
+
+def __validate_params_raises_ex(profit_matrix):
+    if profit_matrix == None or len(profit_matrix) == 0 or any(len(row) == 0 for row in profit_matrix):
+        raise ValueError(PARAM_ERR_MSG)
+    if not all(isinstance(value, int) and value is not None for row in profit_matrix for value in row):
+        raise ValueError(PARAM_ERR_MSG)
+
+    for row_idx, row in enumerate(profit_matrix):
+        for project_idx, value in enumerate(row):
+            if row_idx > 0 and value < profit_matrix[row_idx - 1][project_idx]:
+                raise ProfitValueError(DECR_PROFIT_ERR_MSG, project_idx, row_idx)
+            if value < 0:
+                raise ProfitValueError(NEG_PROFIT_ERR_MSG, project_idx, row_idx)
 
 
 def main():
