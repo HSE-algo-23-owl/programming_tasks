@@ -33,27 +33,21 @@ def get_invest_distribution(profit_matrix: list[list[int]]) -> \
     count_invest = len(profit_matrix)
 
     profit = [[0 for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
-    distr = [[0 for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
+    distr = [[[] for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
 
     for idx1 in range(1, count_proj + 1):
         for idx2 in range(1, count_invest + 1):
             max_profit = 0
-            temp = 0
+            temp = []
             for idx3 in range(min(idx2, len(profit_matrix)) + 1):
                 temp_profit = profit_matrix[idx3 - 1][idx1 - 1] + profit[idx1 - 1][idx2 - idx3] if idx3 > 0 else profit[idx1 - 1][idx2]
                 if temp_profit > max_profit:
                     max_profit = temp_profit
-                    temp = idx3
+                    temp = distr[idx1 - 1][idx2 - idx3] + [idx3] if idx3 >= 0 else distr[idx1 - 1][idx2]
             profit[idx1][idx2] = max_profit
             distr[idx1][idx2] = temp
 
-    remaining_money = count_invest
-    total_distr = [0] * count_proj
-    for idx in range(count_proj, 0, -1):
-        total_distr[idx - 1] = distr[idx][remaining_money]
-        remaining_money -= total_distr[idx - 1]
-
-    return {PROFIT: profit[count_proj][count_invest], DISTRIBUTION: total_distr}
+    return {PROFIT: profit[-1][-1], DISTRIBUTION: distr[-1][-1]}
 
 
 def __validate_params_raises_ex(profit_matrix):
