@@ -32,20 +32,25 @@ def get_invest_distribution(profit_matrix: list[list[int]]) -> \
     count_proj = len(profit_matrix[0])
     count_invest = len(profit_matrix)
 
-    profit = [[0 for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
-    distr = [[[] for _ in range(count_invest + 1)] for _ in range(count_proj + 1)]
+    profit = [[0 for _ in range(count_proj + 1)] for _ in range(count_invest + 1)]
+    distr = [[[] for _ in range(count_proj + 1)] for _ in range(count_invest + 1)]
+    for col_idx in range(len(distr[0])):
+        distr[0][col_idx] = [0]*col_idx
 
-    for idx1 in range(1, count_proj + 1):
-        for idx2 in range(1, count_invest + 1):
+    for proj_idx in range(1, count_proj + 1):
+        for inv_idx in range(1, count_invest + 1):
             max_profit = 0
-            temp = []
-            for idx3 in range(min(idx2, len(profit_matrix)) + 1):
-                temp_profit = profit_matrix[idx3 - 1][idx1 - 1] + profit[idx1 - 1][idx2 - idx3] if idx3 > 0 else profit[idx1 - 1][idx2]
-                if temp_profit > max_profit:
-                    max_profit = temp_profit
-                    temp = distr[idx1 - 1][idx2 - idx3] + [idx3] if idx3 >= 0 else distr[idx1 - 1][idx2]
-            profit[idx1][idx2] = max_profit
-            distr[idx1][idx2] = temp
+            temp_distr = []
+            for prev_inv_lvl in range(inv_idx + 1):
+                cur_inv_lvl = inv_idx - prev_inv_lvl
+                prev_proj_profit = profit[prev_inv_lvl][proj_idx - 1]
+                cur_proj_profit = 0 if cur_inv_lvl == 0 else profit_matrix[cur_inv_lvl - 1][proj_idx - 1]
+                if prev_proj_profit + cur_proj_profit > max_profit:
+                    max_profit = prev_proj_profit + cur_proj_profit
+                    prev_proj_distr = distr[prev_inv_lvl][proj_idx - 1]
+                    temp_distr = [*prev_proj_distr, cur_inv_lvl]
+            profit[inv_idx][proj_idx] = max_profit
+            distr[inv_idx][proj_idx] = temp_distr
 
     return {PROFIT: profit[-1][-1], DISTRIBUTION: distr[-1][-1]}
 
@@ -65,12 +70,12 @@ def __validate_params_raises_ex(profit_matrix):
 
 
 def main():
-    profit_matrix = [[15, 18, 16, 17],
-                     [20, 22, 23, 19],
-                     [26, 28, 27, 25],
-                     [34, 33, 29, 31],
-                     [40, 39, 41, 37]]
-    print(get_invest_distribution(profit_matrix))
+    matrix = [[15, 18, 16, 17],
+              [20, 22, 23, 19],
+              [26, 28, 27, 25],
+              [34, 33, 29, 31],
+              [40, 39, 41, 37]]
+    print(get_invest_distribution(matrix))
 
 
 if __name__ == '__main__':
