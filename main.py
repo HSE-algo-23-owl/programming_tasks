@@ -19,7 +19,32 @@ def generate_strings(length: int) -> list[str]:
     числом.
     :return: Список строк.
     """
-    pass
+    if type(length) != int or length <= 0:
+        raise ValueError(STR_LENGTH_ERROR_MSG)
+
+    s = ''
+    lst = []
+    if length == 0:
+        lst.append(s)
+        return lst
+
+    _zero(length, s, lst)
+    _one(length, s, lst)
+    return lst
+
+def _one(length, s, lst):
+    if length == 1:
+        lst.append(s + '1')
+        return
+    _one(length - 1, s + '1', lst)
+    _zero(length - 1, s + '1', lst)
+
+
+def _zero(length, s, lst):
+    if length == 1:
+        lst.append(s + '0')
+        return
+    _one(length - 1, s + '0', lst)
 
 
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
@@ -31,15 +56,46 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     числами или значение параметра n меньше чем k.
     :return: Значение биномиального коэффициента.
     """
-    pass
+    if type(n) != int:
+        raise ValueError(NOT_INT_VALUE_TEMPL.format('n'))
 
+    if type(k) != int:
+        raise ValueError(NOT_INT_VALUE_TEMPL.format('k'))
+
+    validate_binominal_coeff(n, k)
+
+    if use_rec:
+        return binomial_coefficient_rec(n, k)
+    else:
+        return binomial_coefficient_iter(n, k)
+
+def validate_binominal_coeff(n, k):
+    if n < 0:
+        raise ValueError(NEGATIVE_VALUE_TEMPL.format('n'))
+
+    if k < 0:
+        raise ValueError(NEGATIVE_VALUE_TEMPL.format('k'))
+
+    if n < k:
+        raise ValueError(N_LESS_THAN_K_ERROR_MSG)
+
+def binomial_coefficient_iter(n: int, k:int):
+    с = 1
+    for i in range(min(k, n - k)):
+        с = с * (n - i) // (i + 1)
+    return с
+
+def binomial_coefficient_rec(n: int, k: int):
+    if k == n or k == 0:
+        return 1
+    return binomial_coefficient_rec(n - 1, k - 1) + binomial_coefficient_rec(n - 1, k)
 
 def main():
-    n = 10
+    n = 3
     print(f'Строки длиной {n}:\n{generate_strings(n)}')
 
-    n = 30
-    k = 20
+    n = 7
+    k = 5
     print(f'Биномиальный коэффициент (итеративно) при n, k ({n}, {k}) = ',
           binomial_coefficient(n, k))
     print(f'Биномиальный коэффициент (рекурсивно) при n, k ({n}, {k}) = ',
