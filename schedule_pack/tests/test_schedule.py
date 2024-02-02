@@ -66,7 +66,7 @@ class TestSchedule(unittest.TestCase):
         """Проверяет корректность приведения расписания к строковому типу."""
         task_a = Task('a', 1)
         schedule = Schedule([task_a], 1)
-        str_schedule = SCHEDULE_STR_TEMPL.format(1.0, 1, 1)
+        str_schedule = SCHEDULE_STR_TEMPL.format(1, 1, 1)
         self.assertEqual(str_schedule, str(schedule))
 
     def test_single_task_single_executor(self):
