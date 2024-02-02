@@ -57,29 +57,9 @@ def get_invest_distribution(profit_matrix: list[list[int]]) -> \
             investment_distribution[investment_idx][project_idx] = selected_distribution
 
     # Возвращаем максимальную прибыль и распределение
-    return {PROFIT: find_max_profit(profit_matrix), DISTRIBUTION: investment_distribution[-1][-1]}
+    return {PROFIT: max_profit_matrix[-1][-1], DISTRIBUTION: investment_distribution[-1][-1]}
 
 
-def find_max_profit(mas):
-    """Рассчитывает максимально возможную прибыль
-        :param mas: Таблица с распределением прибыли от проектов в
-        зависимости от уровня инвестиций. Проекты указаны в столбцах, уровни
-        инвестиций в строках.
-        :return: Максимальная прибыль
-        """
-    mas2 = [mas[i][0] for i in range(len(mas))]
-    for j in range(1, len(mas[0])):
-        h = len(mas) - 1
-        while h >= 0:
-            help = [0 for i in range(h + 2)]
-            help[h] = mas2[h]
-            help[h + 1] = mas[h][j]
-            for i in range(h - 1, -1, -1):
-                help[i] = mas2[i] + mas[h - i - 1][j]
-            mas2[h] = max(help)
-            help = []
-            h = h - 1
-    return mas2[len(mas2) - 1]
 
 
 def validate_matrix(profit_matrix: list[list[int]]):
