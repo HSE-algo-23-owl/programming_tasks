@@ -88,19 +88,53 @@ class Schedule:
         :raise ScheduleArgumentError: Если индекс исполнителя не является целым
          положительным числом или превышает количество исполнителей.
         :return: Расписание для указанного исполнителя.
+
+
         """
         self.__validate_executor_idx(executor_idx)
         return tuple(self.__executor_schedule[executor_idx])
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        Tmax = max(task.duration for task in self.__tasks)
+        Tavg = sum(task.duration for task in self.__tasks) / self.executor_count
+        self.__duration = max(Tmax, Tavg)
+        return self.__duration
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        task_idx = 0
+        remain_duration = 0
+        for executor_idx in range(len(self.__executor_schedule)):
+            free_time = self.__duration
+            while free_time > 0:
+                if task_idx >= self.task_count:
+                    self.__executor_schedule[executor_idx].append(ScheduleItem(None, self.__duration - free_time, free_time, True))
+                    free_time = 0
+                    continue
+                if remain_duration == 0:
+                    if (free_time >= self.tasks[task_idx].duration):
+                        self.__executor_schedule[executor_idx].append(ScheduleItem(self.__tasks[task_idx], self.__duration - free_time, self.tasks[task_idx].duration))
+                        free_time -= self.tasks[task_idx].duration
+                        task_idx = task_idx + 1
+                    else:
+                        self.__executor_schedule[executor_idx].append(
+                            ScheduleItem(self.__tasks[task_idx], self.__duration - free_time,
+                                         free_time))
+                        remain_duration = self.tasks[task_idx].duration - free_time
+                        free_time = 0
+                else:
+                    self.__executor_schedule[executor_idx].append(ScheduleItem(self.__tasks[task_idx], self.__duration - free_time, remain_duration))
+                    free_time -= remain_duration
+                    task_idx = task_idx + 1
+                    remain_duration = 0
+
+
+
+
+
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
