@@ -105,8 +105,6 @@ class Schedule:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        person = 0
-        task_time = 0
         task = 0
         min_time = self.__duration
         worker = 0
@@ -123,6 +121,10 @@ class Schedule:
                 task_time += current_task_time
                 self.__executor_schedule[worker].append(ScheduleItem(self.__tasks[task], start, current_task_time))
                 task += 1
+            elif task_time == min_time:
+                worker += 1
+                task_time = 0
+
             else:
                 task_time = min_time - start
                 check = False
@@ -130,6 +132,14 @@ class Schedule:
                 self.__executor_schedule[worker].append(ScheduleItem(self.__tasks[task], start, task_time))
                 worker += 1
                 task_time = 0
+
+        if worker != len(self.__executor_schedule)-1:
+            self.__executor_schedule[-1].append(ScheduleItem(None, 0,
+                                                             min_time,
+                                                             True))
+        elif self.__executor_schedule[-1][-1].duration + self.__executor_schedule[-1][-1].start < min_time:
+            self.__executor_schedule[-1].append(ScheduleItem(None,self.__executor_schedule[-1][-1].duration,min_time-self.__executor_schedule[-1][-1].duration,True))
+
 
 
 
@@ -159,13 +169,11 @@ if __name__ == '__main__':
     print('Пример использования класса Schedule')
 
     # Инициализируем входные данные для составления расписания
-    tasks = [Task('a', 3), Task('b', 4), Task('c', 6), Task('d', 7),
-             Task('e', 7), Task('f', 9), Task('g', 10), Task('h', 12),
-             Task('i', 17)]
+    tasks = [Task('a', 1), Task('b', 1), Task('c', 10)]
 
     # Инициализируем экземпляр класса Schedule
     # при этом будет рассчитано расписание для каждого исполнителя
-    schedule = Schedule(tasks, 5)
+    schedule = Schedule(tasks, 3)
 
     # Выведем в консоль полученное расписание
     print(schedule)
