@@ -1,7 +1,7 @@
 from schedule_pack.task import Task
 from schedule_pack.schedule_item import ScheduleItem
 from schedule_pack.errors import ScheduleArgumentError
-from schedule_pack.constants import ERR_TASKS_NOT_LIST_MSG,\
+from schedule_pack.constants import ERR_TASKS_NOT_LIST_MSG, \
     ERR_TASKS_EMPTY_LIST_MSG, ERR_INVALID_TASK_TEMPL, \
     ERR_EXECUTOR_NOT_INT_MSG, ERR_EXECUTOR_OUT_OF_RANGE_MSG, SCHEDULE_STR_TEMPL
 
@@ -94,13 +94,46 @@ class Schedule:
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        sum = 0
+        list_dur = []
+        for i in self.__tasks:
+            list_dur.append(i.duration)
+            sum += i.duration
+        return max(max(list_dur), sum / self.executor_count)
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        person = 0
+        task_time = 0
+        task = 0
+        min_time = self.__duration
+        worker = 0
+        task_time = 0
+        check = True
+        while task_time <= min_time and task < len(self.__tasks):
+            if not check:
+                current_task_time = dura
+                check = True
+            else:
+                current_task_time = self.tasks[task].duration
+            start = task_time
+            if task_time + current_task_time <= min_time:
+                task_time += current_task_time
+                self.__executor_schedule[worker].append(ScheduleItem(self.__tasks[task], start, current_task_time))
+                task += 1
+            else:
+                task_time = min_time - start
+                check = False
+                dura = self.tasks[task].duration - task_time
+                self.__executor_schedule[worker].append(ScheduleItem(self.__tasks[task], start, task_time))
+                worker += 1
+                task_time = 0
+
+
+
+
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
@@ -136,6 +169,7 @@ if __name__ == '__main__':
 
     # Выведем в консоль полученное расписание
     print(schedule)
+
     for i in range(schedule.executor_count):
         print(f'\nРасписание для исполнителя # {i + 1}:')
         for schedule_item in schedule.get_schedule_for_executor(i):
