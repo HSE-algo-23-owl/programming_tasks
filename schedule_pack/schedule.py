@@ -94,13 +94,61 @@ class Schedule:
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        local_tasks = []
+        for item in self.tasks:
+            local_tasks.append(item)
+        task_dur_max = 0
+        task_dur_sum = 0
+        for i in range(self.task_count):
+            task_dur_max = max(local_tasks[i].duration,task_dur_max)
+            task_dur_sum += local_tasks[i].duration
+        task_dur_avg = task_dur_sum//self.executor_count
+        task_dur_max = max(task_dur_avg,task_dur_max)
+        return task_dur_max
+
+
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        remaining_task_part = 0
+        remaining_executor_time = 0
+        current_task_index = 0
+
+        for executor_index in range(self.executor_count):
+            remaining_executor_time = self.__calculate_duration()
+
+            while remaining_executor_time > 0:
+                if current_task_index < len(self.tasks):
+                    if remaining_task_part != 0:
+                        self.__executor_schedule[executor_index].append(
+                            ScheduleItem(self.__tasks[current_task_index], self.__calculate_duration() - remaining_executor_time ,
+                                         remaining_task_part))
+                        remaining_executor_time -= remaining_task_part
+                        remaining_task_part = 0
+                        current_task_index += 1
+                    else:
+                        if remaining_executor_time >= self.tasks[current_task_index].duration:
+                            self.__executor_schedule[executor_index].append(
+                                ScheduleItem(self.__tasks[current_task_index],
+                                             self.__calculate_duration() - remaining_executor_time,
+                                             self.tasks[current_task_index].duration))
+                            remaining_executor_time -= self.tasks[current_task_index].duration
+                            current_task_index += 1
+                        else:
+                            self.__executor_schedule[executor_index].append(
+                                ScheduleItem(self.__tasks[current_task_index],
+                                             self.__calculate_duration() - remaining_executor_time, remaining_executor_time))
+                            remaining_task_part = self.tasks[current_task_index].duration - remaining_executor_time
+                            remaining_executor_time = 0
+                else:
+                    self.__executor_schedule[executor_index].append(
+                        ScheduleItem(None, self.__calculate_duration() - remaining_executor_time, remaining_executor_time, True))
+                    remaining_executor_time = 0
+                    break
+
+
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
