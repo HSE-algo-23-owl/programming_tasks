@@ -143,10 +143,12 @@ class Schedule:
                             remaining_task_part = self.tasks[current_task_index].duration - remaining_executor_time
                             remaining_executor_time = 0
                 else:
+                    """Переполнение"""
                     self.__executor_schedule[executor_index].append(
                         ScheduleItem(None, self.__calculate_duration() - remaining_executor_time, remaining_executor_time, True))
                     remaining_executor_time = 0
                     break
+
 
 
 
