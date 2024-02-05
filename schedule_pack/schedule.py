@@ -94,13 +94,49 @@ class Schedule:
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        Tmax = max(task.duration for task in self.__tasks)
+        Tavg = sum(task.duration for task in self.__tasks) / self.executor_count
+        self.__duration = max(Tmax, Tavg)
+        return self.__duration
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        cur_sum = 0
+        _exec = 0
+        for task_idx in range(len(self.__tasks)):
+
+            if cur_sum + self.__tasks[task_idx].duration <= self.__calculate_duration():
+                self.__executor_schedule[_exec].append(
+                    ScheduleItem(self.__tasks[task_idx], cur_sum, self.tasks[task_idx].duration))
+                cur_sum += self.__tasks[task_idx].duration
+                _task = self.__tasks[task_idx].duration
+            elif cur_sum == self.__calculate_duration():
+                _exec += 1
+                self.__executor_schedule[_exec].append(
+                    ScheduleItem(self.__tasks[task_idx], self.__calculate_duration()
+                                 - cur_sum, self.tasks[task_idx].duration))
+                cur_sum = self.tasks[task_idx].duration
+                if cur_sum < self.__calculate_duration():
+                    self.__executor_schedule[_exec].append(
+                        ScheduleItem(None, self.__duration - cur_sum, cur_sum, True))
+            else:
+                self.__executor_schedule[_exec].append(
+                    ScheduleItem(self.__tasks[task_idx], cur_sum, self.__calculate_duration() - cur_sum))
+                _exec += 1
+                self.__executor_schedule[_exec].append(
+                    ScheduleItem(self.__tasks[task_idx], 0, cur_sum + self.tasks[task_idx].duration
+                                 - self.__calculate_duration()))
+                cur_sum += self.tasks[task_idx].duration - self.__calculate_duration()
+                if cur_sum != self.__calculate_duration() and task_idx == len(self.__tasks) - 1:
+                    self.__executor_schedule[_exec].append(
+                        ScheduleItem(None, cur_sum, self.__calculate_duration() - cur_sum, True))
+
+        while _exec < self.executor_count - 1:
+            _exec += 1
+            self.__executor_schedule[_exec].append(
+                ScheduleItem(None, 0, self.__calculate_duration(), True))
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
