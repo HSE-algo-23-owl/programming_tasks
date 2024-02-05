@@ -94,13 +94,69 @@ class Schedule:
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        task_durations = [task.duration for task in self.__tasks]  # список длительностей задач
+        max_duration = max(task_durations)
+        average_duration = sum(task_durations)//self.executor_count
+
+        return max(max_duration, average_duration)
+
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        min_duration = self.__calculate_duration()
+
+        start = 0
+        executor = 0
+        for task in self.__tasks:
+            duration = task.duration
+            is_downtime = True if task.name == 'downtime' else False
+            if start + duration > min_duration:
+                self.__executor_schedule[executor].append(ScheduleItem(task, start, abs(min_duration-start), is_downtime))
+                executor += 1
+                start = abs(min_duration-start-duration)
+                self.__executor_schedule[executor].append(ScheduleItem(task, 0, start, is_downtime))
+                continue
+
+            if start + duration == min_duration:
+                self.__executor_schedule[executor].append(ScheduleItem(task, start, duration, is_downtime))
+                executor += 1
+                start = 0
+                continue
+
+            self.__executor_schedule[executor].append(ScheduleItem(task, start, duration, is_downtime))
+            start += duration
+
+        for executor in self.__executor_schedule:  # заполняем пропуски элементами простоя
+            amount = sum([task.duration for task in executor])
+            if amount != min_duration:
+                executor.append(ScheduleItem(None, amount, min_duration-amount, True))
+
+
+    def create_gantt_diagram(self) -> None:
+        """Процедура составляет диаграмму Ганта в текстовом виде на основе получившегося
+        расписания"""
+        space = " " * 3
+        gantt_diagram = "gantt\n"
+        gantt_diagram += space + "title Диаграмма Ганта\n"
+        gantt_diagram += space + "dateFormat  HH:mm\n"
+        gantt_diagram += space + "axisFormat %H:%M\n"
+        gantt_diagram += space + "Начало выполнения работ : milestone, m1, 00:00, 0h\n"
+
+        for i in range(self.executor_count):
+            gantt_diagram += space + f"section Исполнитель {i + 1}\n"
+            for j, item in enumerate(self.get_schedule_for_executor(i)):
+                task_name = item.task_name
+                start_time = item.start
+                end_time = item.end
+                if j == 0:
+                    gantt_diagram += space + f"Задача {task_name} :{chr(97 + i)}{j}, 00:00, {end_time - start_time}h\n"
+                else:
+                    gantt_diagram += space + f"Задача {task_name} :{chr(97 + i)}{j}, after {chr(97 + i)}{j-1}, {end_time - start_time}h\n"
+
+        gantt_diagram += space + f"Окончание выполнения работ : milestone, m2, {self.__calculate_duration()}:00, 0h\n"
+        return gantt_diagram
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
