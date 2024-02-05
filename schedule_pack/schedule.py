@@ -132,14 +132,21 @@ class Schedule:
                 self.__executor_schedule[worker].append(ScheduleItem(self.__tasks[task], start, task_time))
                 worker += 1
                 task_time = 0
-
-        if worker != len(self.__executor_schedule)-1:
+        for worker_id in range(len(self.__executor_schedule)-1):
+            if worker_id == len(self.__executor_schedule)-1:
+                self.__executor_schedule[worker_id].append(ScheduleItem(None, 0,
+                                                                 min_time,
+                                                                 True))
+            elif self.__executor_schedule[worker_id][-1].duration + self.__executor_schedule[worker_id][-1].start < min_time:
+                self.__executor_schedule[worker_id].append(ScheduleItem(None,self.__executor_schedule[worker_id][-1].duration,min_time-self.__executor_schedule[worker_id][-1].duration,True))
+        if worker != len(self.__executor_schedule) - 1:
             self.__executor_schedule[-1].append(ScheduleItem(None, 0,
                                                              min_time,
                                                              True))
         elif self.__executor_schedule[-1][-1].duration + self.__executor_schedule[-1][-1].start < min_time:
-            self.__executor_schedule[-1].append(ScheduleItem(None,self.__executor_schedule[-1][-1].duration,min_time-self.__executor_schedule[-1][-1].duration,True))
-
+            self.__executor_schedule[-1].append(ScheduleItem(None, self.__executor_schedule[-1][-1].duration,
+                                                             min_time - self.__executor_schedule[-1][-1].duration,
+                                                             True))
 
 
 
