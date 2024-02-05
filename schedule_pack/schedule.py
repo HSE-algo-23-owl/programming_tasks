@@ -94,13 +94,62 @@ class Schedule:
 
     def __calculate_duration(self) -> float:
         """Вычисляет и возвращает минимальную продолжительность расписания"""
-        pass
+        # Находим максимальную продолжительность задачи в списке
+        max_duration = max(task.duration for task in self.__tasks)
+        # Вычисляем среднюю продолжительность задач для каждого исполнителя
+        avg_duration = sum(task.duration for task in self.__tasks) / self.executor_count
+        # Устанавливаем продолжительность как максимум из найденных значений
+        self.__duration = max(max_duration, avg_duration)
+        return self.__duration
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, на основе исходного списка задач и общей продолжительности
         расписания."""
-        pass
+        current_sum = 0
+        current_executor = 0
+
+        for task_idx, task in enumerate(self.__tasks):
+            # Если задача помещается в текущий исполнитель
+            if current_sum + task.duration <= self.__calculate_duration():
+                self.__add_schedule_item(current_executor, task, current_sum, task.duration)
+                current_sum += task.duration
+            # Если текущий исполнитель уже полностью заполнен
+            elif current_sum == self.__calculate_duration():
+                current_executor += 1
+                self.__add_schedule_item(current_executor, task, self.__calculate_duration() - current_sum,
+                                         task.duration)
+                current_sum = task.duration
+                # Если еще остались свободные блоки в текущем исполнителе
+                if current_sum < self.__calculate_duration():
+                    self.__add_schedule_item(current_executor, None, self.__duration - current_sum, current_sum, True)
+            # Если задача переполняет текущего исполнителя
+            else:
+                self.__add_schedule_item(current_executor, task, current_sum, self.__calculate_duration() - current_sum)
+                current_executor += 1
+                self.__add_schedule_item(current_executor, task, 0,
+                                         current_sum + task.duration - self.__calculate_duration())
+                current_sum += task.duration - self.__calculate_duration()
+
+                # Если еще остались свободные блоки в текущем исполнителе и
+                # текущая задача последняя в списке
+                if current_sum != self.__calculate_duration() and task_idx == len(self.__tasks) - 1:
+                    self.__add_schedule_item(current_executor, None, current_sum,
+                                             self.__calculate_duration() - current_sum, True)
+
+            # Обработка случая, когда остаются незаполненные исполнители
+        self.__handle_remaining_executors(current_sum, current_executor)
+
+    def __add_schedule_item(self, current_executor, task, current_sum, duration, is_last=False):
+        """Добавляет элемент расписания для текущего исполнителя"""
+        self.__executor_schedule[current_executor].append(ScheduleItem(task, current_sum, duration, is_last))
+
+    def __handle_remaining_executors(self, current_sum, current_executor):
+        """Обрабатывает случай, когда остаются незаполненные исполнители"""
+        while current_executor < self.executor_count - 1:
+            current_executor += 1
+            self.__executor_schedule[current_executor].append(
+                ScheduleItem(None, 0, self.__calculate_duration(), True))
 
     @staticmethod
     def __validate_params(tasks: list[Task]) -> None:
