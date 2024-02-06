@@ -109,6 +109,7 @@ class Schedule:
         min_time = self.__duration
         worker = 0
         task_time = 0
+        dura = 0
         check = True
         while task_time <= min_time and task < len(self.__tasks):
             if not check:
