@@ -96,9 +96,6 @@ class Schedule:
         Tmax = max(task.duration for task in self.__tasks)
         Tavg = sum(task.duration for task in self.__tasks) / self.executor_count
         self.__duration = max(Tmax, Tavg)
-        return self.__duration
-        # Словарь для хранения уже назначенных задач
-
         assigned_tasks = {}
         for task in self.__tasks:
             assigned_tasks[task.name] = False
@@ -110,6 +107,8 @@ class Schedule:
                 unique_duration += task.duration
                 assigned_tasks[task.name] = True
         return self.__duration
+
+
 
     def __fill_schedule_for_each_executor(self) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
