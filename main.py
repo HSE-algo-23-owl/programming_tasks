@@ -1,4 +1,5 @@
 PARAM_ERR_MSG = 'Таблица не является прямоугольной матрицей со значениями 0 1'
+
 def get_path_count(table: list[list[int]]) -> int:
     """Возвращает количество допустимых путей в таблице из правого верхнего угла
     в левый нижний.
@@ -28,7 +29,6 @@ def validate_price_table(table):
         for elem in row:
             if elem not in [0, 1]:
                 raise ValueError(PARAM_ERR_MSG)
-
 
 def number_possible_routes (table: list[list[int]]) -> int:
     row, col = len(table), len(table[0])
