@@ -72,7 +72,6 @@ def min_cost_path_with_none(table) :
 
     return {COST: float(F[-1][-1]), PATH: path[::-1]}
 
-
 def main():
     table =     [[1, None, 2],
                  [None, 4, 2],
