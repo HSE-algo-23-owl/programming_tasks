@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from typing import Callable, TypeVar
 
@@ -6,7 +8,16 @@ WIN = 1
 LOOS = 2
 T = TypeVar('T')
 
-
+def check_Exseptions(sample, get_winner):
+    if not isinstance(sample, (list, tuple)):
+        raise TypeError("Sample for a tournament is not a list or a tuple")
+    if len(sample) <= 1:
+        raise ValueError("Sample for the tournament consists of less than two objects")
+    if get_winner is None or not callable(get_winner):
+        raise TypeError("get_winner is not a function")
+    result = get_winner(sample[0], sample[1])
+    if result not in sample:
+        raise RuntimeError("get_winner function returned an invalid value")
 def tournament(sample: list[T] | tuple[T], get_winner: Callable[[T, T], T]):
     """Выполняет турнирный отбор из заданной выборки. Проводит серию турниров
     между парами объектов из выборки. Победители каждого турнира переходят на
@@ -21,11 +32,21 @@ def tournament(sample: list[T] | tuple[T], get_winner: Callable[[T, T], T]):
     значение.
     :return: Объект победитель турнира.
     """
-    pass
+    check_Exseptions(sample,get_winner)
+    if isinstance(sample, (tuple)):
+        sample = list(sample)
+    i=1
+    while i< len(sample):
+        if get_winner(sample[i],sample[i-1]) == sample[i-1]:
+            sample.append(sample[i-1])
+        else:
+            sample.append(sample[i])
+        i+=2
 
+    return sample[-1]
 
 if __name__ == '__main__':
-    sample = [i for i in range(21)]
+    sample = [(1, 2)]
     random.shuffle(sample)
 
     print(f'Список: {sample}')
