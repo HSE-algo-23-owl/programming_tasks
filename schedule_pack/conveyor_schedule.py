@@ -55,13 +55,58 @@ class ConveyorSchedule(AbstractSchedule):
     def __fill_schedule(self, tasks: list[StagedTask]) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, согласно алгоритму Джонсона."""
-        pass
+        first_executor_schedule = self._executor_schedule[0]
+        second_executor_schedule = self._executor_schedule[1]
+
+        first_exec_time = 0
+
+        for task in tasks:  # заполнение расписания 1-го исполнителя
+            stage_duration = task.stage_duration(0)
+            first_executor_schedule.append(ScheduleItem(task, first_exec_time, stage_duration))
+            first_exec_time += stage_duration
+
+        task_idx = first_task_idx = 0
+        total_time = 0
+        while first_task_idx < len(tasks):  # заполнение расписания 2-го исполнителя
+            item = first_executor_schedule[first_task_idx]
+            first_exec_task_end = item.end
+
+            if item.task_name == tasks[task_idx].name and first_exec_task_end > total_time:
+                second_executor_schedule.append(ScheduleItem(None, total_time, abs(first_exec_task_end-total_time), True))
+                total_time += abs(first_exec_task_end-total_time)
+            else:
+                second_executor_schedule.append(ScheduleItem(tasks[task_idx], total_time, tasks[task_idx].stage_duration(1)))
+                total_time += tasks[task_idx].stage_duration(1)
+                task_idx += 1
+
+            if total_time >= first_exec_task_end:
+                first_task_idx += 1
+
+        second_executor_schedule.append(ScheduleItem(tasks[-1], total_time, tasks[-1].stage_duration(1)))
+        first_executor_schedule.append(ScheduleItem(None, first_executor_schedule[-1].end,
+                                                    second_executor_schedule[-1].end-first_executor_schedule[-1].end,
+                                                    True))
 
     @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
         """Возвращает отсортированный список задач для применения
         алгоритма Джонсона."""
-        pass
+        first_group = []
+        second_group = []
+
+        for task in tasks:
+            first_stage_duration, second_stage_duration = task.stage_durations
+
+            if first_stage_duration <= second_stage_duration:
+                first_group.append(task)
+            else:
+                second_group.append(task)
+
+        first_group.sort(key=lambda x: x.stage_duration(0))
+        second_group.sort(key=lambda x: x.stage_duration(1), reverse=True)
+
+        return first_group + second_group
+
 
     @staticmethod
     def __validate_params(tasks: list[StagedTask]) -> None:
