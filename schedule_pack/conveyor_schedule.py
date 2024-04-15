@@ -87,32 +87,36 @@ class ConveyorSchedule(AbstractSchedule):
                                                     second_executor_schedule[-1].end-first_executor_schedule[-1].end,
                                                     True))
 
-    def show_gantt_diagram(self) -> None:
-        """Процедура составляет диаграмму Ганта в текстовом виде на основе получившегося
-        расписания"""
+    @staticmethod
+    def __format_task_line(self, task, executor_id, task_id) -> str:
+        """Формирует строку для задачи в диаграмме Ганта"""
+        task_name = task.task_name
+        if task_name == "downtime":
+            return ""
+        start_time = f"0{task.start // 24 + 1} {str(task.start % 24).zfill(2)}:00"
+        return " "*3 + f"{task_name} :{chr(97 + executor_id)}{task_id}, {start_time}, {task.duration}h\n"
+
+    def show_gantt_diagram(self) -> str:
+        """Процедура составляет диаграмму Ганта в текстовом виде на основе получившегося расписания"""
         space = " " * 3
-        gantt_diagram = "gantt\n"
-        gantt_diagram += space + "title Диаграмма Ганта\n"
-        gantt_diagram += space + "dateFormat 01 HH:mm\n"
-        gantt_diagram += space + "axisFormat %H:%M\n"
-        gantt_diagram += space + "Начало выполнения работ : milestone, m1, 00:00, 0h\n"
+        gantt_diagram = ["gantt\n",
+                         f"{space}title Диаграмма Ганта\n",
+                         f"{space}dateFormat DD HH:mm\n",
+                         f"{space}axisFormat %H:%M\n",
+                         f"{space}Начало выполнения работ : milestone, m1, 01 00:00, 0h\n"]
 
-        for i in range(self.executor_count):
-            gantt_diagram += space + f"section Исполнитель {i + 1}\n"
-            for j, task in enumerate(self.get_schedule_for_executor(i)):
-                task_name = task.task_name
+        schedules = [self.get_schedule_for_executor(i) for i in range(self.executor_count)]
+        total_time = schedules[0][-1].end
 
-                if task_name == "downtime":
-                    continue
+        for i, schedule in enumerate(schedules):
+            gantt_diagram.append(f"{space}section Исполнитель {i + 1}\n")
+            task_lines = [self.__format_task_line(task, i, j) for j, task in enumerate(schedule)]
+            gantt_diagram.extend(task_lines)
 
-                if i == 0:
-                    gantt_diagram += space + f"{task_name} :{chr(97 + i)}{j}, 0{task.start // 24 + 1} {str(task.start - 24 * (task.start // 24)).zfill(2)}:00, {task.duration}h\n"
-                else:
-                    gantt_diagram += space + f"{task_name} :{chr(97 + i)}{j}, 0{task.start // 24 + 1} {str(task.start % 24).zfill(2)}:00, {task.duration}h\n"
+        end_time = f"0{total_time // 24 + 1} {str(total_time % 24).zfill(2)}:00"
+        gantt_diagram.append(f"{space}Окончание выполнения работ : milestone, m2, {end_time}, 0h")
 
-        total_time = self.get_schedule_for_executor(0)[-1].end
-        gantt_diagram += space + f"Окончание выполнения работ : milestone, m2, 0{total_time // 24 + 1} {str(total_time % 24).zfill(2)}:00, 0h\n"
-        return gantt_diagram
+        return "".join(gantt_diagram)
 
     @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
@@ -133,7 +137,6 @@ class ConveyorSchedule(AbstractSchedule):
         second_group.sort(key=lambda x: x.stage_duration(1), reverse=True)
 
         return first_group + second_group
-
 
     @staticmethod
     def __validate_params(tasks: list[StagedTask]) -> None:
