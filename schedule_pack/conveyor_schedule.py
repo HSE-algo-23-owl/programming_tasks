@@ -87,6 +87,33 @@ class ConveyorSchedule(AbstractSchedule):
                                                     second_executor_schedule[-1].end-first_executor_schedule[-1].end,
                                                     True))
 
+    def show_gantt_diagram(self) -> None:
+        """Процедура составляет диаграмму Ганта в текстовом виде на основе получившегося
+        расписания"""
+        space = " " * 3
+        gantt_diagram = "gantt\n"
+        gantt_diagram += space + "title Диаграмма Ганта\n"
+        gantt_diagram += space + "dateFormat 01 HH:mm\n"
+        gantt_diagram += space + "axisFormat %H:%M\n"
+        gantt_diagram += space + "Начало выполнения работ : milestone, m1, 00:00, 0h\n"
+
+        for i in range(self.executor_count):
+            gantt_diagram += space + f"section Исполнитель {i + 1}\n"
+            for j, task in enumerate(self.get_schedule_for_executor(i)):
+                task_name = task.task_name
+
+                if task_name == "downtime":
+                    continue
+
+                if i == 0:
+                    gantt_diagram += space + f"{task_name} :{chr(97 + i)}{j}, 0{task.start // 24 + 1} {str(task.start - 24 * (task.start // 24)).zfill(2)}:00, {task.duration}h\n"
+                else:
+                    gantt_diagram += space + f"{task_name} :{chr(97 + i)}{j}, 0{task.start // 24 + 1} {str(task.start % 24).zfill(2)}:00, {task.duration}h\n"
+
+        total_time = self.get_schedule_for_executor(0)[-1].end
+        gantt_diagram += space + f"Окончание выполнения работ : milestone, m2, 0{total_time // 24 + 1} {str(total_time % 24).zfill(2)}:00, 0h\n"
+        return gantt_diagram
+
     @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
         """Возвращает отсортированный список задач для применения
