@@ -88,37 +88,6 @@ class ConveyorSchedule(AbstractSchedule):
                                                     True))
 
     @staticmethod
-    def __format_task_line(self, task, executor_id, task_id) -> str:
-        """Формирует строку для задачи в диаграмме Ганта"""
-        task_name = task.task_name
-        if task_name == "downtime":
-            return ""
-        start_time = f"0{task.start // 24 + 1} {str(task.start % 24).zfill(2)}:00"
-        return " "*3 + f"{task_name} :{chr(97 + executor_id)}{task_id}, {start_time}, {task.duration}h\n"
-
-    def show_gantt_diagram(self) -> str:
-        """Процедура составляет диаграмму Ганта в текстовом виде на основе получившегося расписания"""
-        space = " " * 3
-        gantt_diagram = ["gantt\n",
-                         f"{space}title Диаграмма Ганта\n",
-                         f"{space}dateFormat DD HH:mm\n",
-                         f"{space}axisFormat %H:%M\n",
-                         f"{space}Начало выполнения работ : milestone, m1, 01 00:00, 0h\n"]
-
-        schedules = [self.get_schedule_for_executor(i) for i in range(self.executor_count)]
-        total_time = schedules[0][-1].end
-
-        for i, schedule in enumerate(schedules):
-            gantt_diagram.append(f"{space}section Исполнитель {i + 1}\n")
-            task_lines = [self.__format_task_line(task, i, j) for j, task in enumerate(schedule)]
-            gantt_diagram.extend(task_lines)
-
-        end_time = f"0{total_time // 24 + 1} {str(total_time % 24).zfill(2)}:00"
-        gantt_diagram.append(f"{space}Окончание выполнения работ : milestone, m2, {end_time}, 0h")
-
-        return "".join(gantt_diagram)
-
-    @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
         """Возвращает отсортированный список задач для применения
         алгоритма Джонсона."""
