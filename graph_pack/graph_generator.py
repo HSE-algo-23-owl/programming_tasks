@@ -1,6 +1,7 @@
 import random as rnd
 import networkx as nx
 import matplotlib.pyplot as plt
+from math import log2
 
 
 from graph_pack.constants import CHARS, ERR_NOT_INT_TREE_CNT, \
@@ -37,16 +38,122 @@ class GraphGenerator:
         меньше единицы, если количество вершин меньше чем количество деревьев.
         :return: Граф.
         """
-        pass
+
+        GraphGenerator.__validate_params(tree_count, vertex_count)
+
+        colors = GraphGenerator.__get_colors(tree_count)
+        names = GraphGenerator.__get_names(vertex_count)
+        graph = nx.DiGraph()
+
+        depth = 1
+        leafs = [list(), []]
+
+        for i, color in enumerate(colors, start=1):
+            node_name = names.pop(0)
+            graph.add_node(node_name, color=color, pos=(i*5000, 0))
+            leafs[0].append(node_name)
+
+        while names:
+            parent_name = rnd.choice(leafs[0])
+            leafs[0].remove(parent_name)
+
+            parent_node = graph.nodes[parent_name]
+
+            cnt_child = rnd.randint(1, int(log2(len(names)) // tree_count + 1))
+
+            x = parent_node["pos"][0] // cnt_child
+
+            while cnt_child:
+                child_name = names.pop(rnd.randint(0, len(names)-1))
+                graph.add_node(child_name, color=parent_node['color'], pos=(x, depth*1000))
+                leafs[-1].append(child_name)
+                graph.add_edge(child_name, parent_name)
+
+                x += 1000
+                cnt_child -= 1
+
+            if not leafs[0]:
+                del leafs[0]
+
+                parent_count = min(len(leafs[0]), int(vertex_count / (tree_count * depth)))
+
+                if parent_count == 0:
+                    return graph
+
+                if parent_count > len(leafs[0]):
+                    parent_count = len(leafs[0])
+
+                if parent_count > 0:
+                    random_leafs = rnd.choices(leafs[0], k=parent_count)
+                    leafs[0] = random_leafs
+
+                leafs.append([])
+                depth += 1
+
+        return graph
+
 
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
         """Выводит изображение графа."""
         color_map = [graph.nodes[name]['color'] for name in graph.nodes]
-        nx.draw_planar(graph, with_labels=True, node_color=color_map)
+        #nx.draw_planar(graph, with_labels=True, node_color=color_map)
+
+        #pos = {node: (1, i) for i, node in enumerate(graph.nodes)}
+        pos = {node: graph.nodes[node]['pos'] for node in graph.nodes}
+        nx.draw(graph, pos, with_labels=True, node_color=color_map)
+
         plt.show()
+
+    @staticmethod
+    def __validate_params(tree_count, vertex_count) -> None:
+        """Генерирует случайные цвета для покраски деревьев."""
+        if type(tree_count) != int:
+            raise TypeError(ERR_NOT_INT_TREE_CNT)
+
+        if type(vertex_count) != int:
+            raise TypeError(ERR_NOT_INT_VERTEX_CNT)
+
+        if tree_count < 1:
+            raise ValueError(ERR_LESS_THAN_1_TREE_CNT)
+
+        if vertex_count < 1:
+            raise ValueError(ERR_LESS_THAN_1_VERTEX_CNT)
+
+        if vertex_count < tree_count:
+            raise ValueError(ERR_VERTEX_CNT_LESS_THAN_TREE_CNT)
+
+    @staticmethod
+    def __get_colors(tree_count: int) -> list[str]:
+        """Генерирует случайные цвета для покраски деревьев."""
+        return ['#{:06x}'.format(rnd.randint(0, 0xFFFFFF)) for _ in range(tree_count)]
+
+    @staticmethod
+    def __get_names(vertex_count: int) -> list[str]:
+        """Генерирует уникальные имена вершин деревьев."""
+        names = []
+
+        for i in range(1, vertex_count + 1):
+            name = ""
+            while i:
+                i -= 1
+                name += chr(97 + i % 26)
+                i //= 26
+
+            names.append(name[::-1])
+
+        return names
 
 
 if __name__ == '__main__':
     graph = GraphGenerator.generate_random_forest(3, 15)
     GraphGenerator.show_plot(graph)
+
+    # g = nx.Graph()
+    # g.add_node(1, color='red')
+    # g.add_node(2, color='green')
+    # g.add_node(3, color='blue')
+    # g.add_edges_from([(1, 2), (2, 3), (3, 1)])
+    # GraphGenerator.show_plot(g)
+
+
