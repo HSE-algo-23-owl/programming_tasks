@@ -21,12 +21,30 @@ def tournament(sample: list[T] | tuple[T], get_winner: Callable[[T, T], T]):
     значение.
     :return: Объект победитель турнира.
     """
-    pass
+    if not isinstance(sample, (list, tuple)):
+        raise TypeError("Sample for a tournament is not a list or a tuple")
+    if not callable(get_winner):
+        raise TypeError("get_winner is not a function")
+    if len(sample) < 2:
+        raise ValueError("Sample for the tournament consists of less than two objects")
+
+    while len(sample) > 1:
+        next_round = []
+        for i in range(0, len(sample), 2):
+            if i + 1 < len(sample):
+                winner = get_winner(sample[i], sample[i + 1])
+                if winner not in (sample[i], sample[i + 1]):
+                    raise RuntimeError("get_winner function returned an invalid value")
+                next_round.append(winner)
+            else:
+                next_round.append(sample[i])
+        sample = next_round
+
+    return sample[0]
 
 
 if __name__ == '__main__':
     sample = [i for i in range(21)]
     random.shuffle(sample)
-
     print(f'Список: {sample}')
     print(f'Победитель турнира: {tournament(sample, lambda x, y: max(x, y))}')
