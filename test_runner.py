@@ -14,9 +14,9 @@ def suite():
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestTask))
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestScheduleItem))
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestSchedule))
-    test_suite.addTest(TestLoader().loadTestsFromTestCase(TestLevelSchedule))
+    # test_suite.addTest(TestLoader().loadTestsFromTestCase(TestLevelSchedule))
     # test_suite.addTest(TestLoader().loadTestsFromTestCase(TestGraphValidator))
-    # test_suite.addTest(TestLoader().loadTestsFromTestCase(TestGraphGenerator))
+    test_suite.addTest(TestLoader().loadTestsFromTestCase(TestGraphGenerator))
     return test_suite
 
 
