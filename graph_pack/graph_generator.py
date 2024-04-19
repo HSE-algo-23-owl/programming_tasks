@@ -46,36 +46,48 @@ class GraphGenerator:
         graph = nx.DiGraph()
 
         depth = 1
-        leafs = [list(), []]
+        leafs = [list(), []]  # список листьев по уровням
 
-        for i, color in enumerate(colors, start=1):
+        for i, color in enumerate(colors, start=1):  # генерация стоков
             node_name = names.pop(0)
             graph.add_node(node_name, color=color, pos=(i*5000, 0))
             leafs[0].append(node_name)
 
-        while names:
+        while names:  # пока есть имена для узлов
             parent_name = rnd.choice(leafs[0])
             leafs[0].remove(parent_name)
 
             parent_node = graph.nodes[parent_name]
 
-            cnt_child = rnd.randint(1, int(log2(len(names)) // tree_count + 1))
+            cnt_child = rnd.randint(1, int(log2(len(names)) // tree_count + 1))  # расчет количества потомков
 
-            x = parent_node["pos"][0] // cnt_child
+            x = parent_node["pos"][0] // (cnt_child * tree_count)  # расчет координаты расположения
+            coordinates = []
+
+            for i in range(1, cnt_child // 2 + 1):
+                coordinates.append(parent_node["pos"][0] - x * i)
+
+            for i in range(1, cnt_child // 2 + 1):
+                coordinates.append(parent_node["pos"][0] + x * i)
+
+            if cnt_child % 2 != 0:
+                coordinates.append(parent_node["pos"][0])
+
+            coordinates.sort()
 
             while cnt_child:
                 child_name = names.pop(rnd.randint(0, len(names)-1))
-                graph.add_node(child_name, color=parent_node['color'], pos=(x, depth*1000))
+                graph.add_node(child_name, color=parent_node['color'], pos=(coordinates.pop(0), depth*1000))
                 leafs[-1].append(child_name)
                 graph.add_edge(child_name, parent_name)
 
-                x += 1000
                 cnt_child -= 1
 
-            if not leafs[0]:
-                del leafs[0]
+            if not leafs[0]:  # если на уровне не осталось узлов
+                del leafs[0]  # удаляем уровень
 
-                parent_count = min(len(leafs[0]), int(vertex_count / (tree_count * depth)))
+                parent_count = rnd.randint(1, min(len(leafs[0]), int(vertex_count / (tree_count * depth))))  # кол-во
+                # родителей на новом уровне
 
                 if parent_count == 0:
                     return graph
@@ -92,15 +104,14 @@ class GraphGenerator:
 
         return graph
 
-
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
         """Выводит изображение графа."""
         color_map = [graph.nodes[name]['color'] for name in graph.nodes]
         #nx.draw_planar(graph, with_labels=True, node_color=color_map)
 
-        #pos = {node: (1, i) for i, node in enumerate(graph.nodes)}
         pos = {node: graph.nodes[node]['pos'] for node in graph.nodes}
+
         nx.draw(graph, pos, with_labels=True, node_color=color_map)
 
         plt.show()
@@ -146,14 +157,5 @@ class GraphGenerator:
 
 
 if __name__ == '__main__':
-    graph = GraphGenerator.generate_random_forest(3, 15)
+    graph = GraphGenerator.generate_random_forest(3, 20)
     GraphGenerator.show_plot(graph)
-
-    # g = nx.Graph()
-    # g.add_node(1, color='red')
-    # g.add_node(2, color='green')
-    # g.add_node(3, color='blue')
-    # g.add_edges_from([(1, 2), (2, 3), (3, 1)])
-    # GraphGenerator.show_plot(g)
-
-
