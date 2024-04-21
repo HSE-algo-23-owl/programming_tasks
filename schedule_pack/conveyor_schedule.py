@@ -55,13 +55,46 @@ class ConveyorSchedule(AbstractSchedule):
     def __fill_schedule(self, tasks: list[StagedTask]) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, согласно алгоритму Джонсона."""
-        pass
+        temp = 0
+        idx = 0
+        temp_idx = 0
+        res = 0
+        for elem in tasks:
+            self._executor_schedule[0].append(ScheduleItem(elem, temp, elem.stage_duration(0)))
+            temp += elem.stage_duration(0)
+        while temp_idx < len(tasks):
+            if not(self._executor_schedule[0][temp_idx].end > res) or not(self._executor_schedule[0][temp_idx].task_name == tasks[idx].name):
+                self._executor_schedule[1].append(ScheduleItem(tasks[idx], res, tasks[idx].stage_duration(1)))
+                res += tasks[idx].stage_duration(1)
+                idx += 1
+            else:
+                self._executor_schedule[1].append(
+                    ScheduleItem(None, res, abs(self._executor_schedule[0][temp_idx].end - res), True))
+                res += abs(self._executor_schedule[0][temp_idx].end - res)
+
+            if not(res < self._executor_schedule[0][temp_idx].end):
+                temp_idx += 1
+
+        self._executor_schedule[1].append(ScheduleItem(tasks[-1], res, tasks[-1].stage_duration(1)))
+        self._executor_schedule[0].append(ScheduleItem(None, self._executor_schedule[0][-1].end, self._executor_schedule[1][-1].end - self._executor_schedule[0][-1].end, True))
 
     @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
         """Возвращает отсортированный список задач для применения
         алгоритма Джонсона."""
-        pass
+        arr1 = []
+        arr2 = []
+        for elem in tasks:
+            temp1, temp2 = elem.stage_durations
+            if temp1 > temp2:
+                arr2.append(elem)
+            else:
+                arr1.append(elem)
+        arr2.sort(key=lambda x: x.stage_duration(1), reverse=True)
+        arr1.sort(key=lambda x: x.stage_duration(0))
+        for elem in arr2:
+            arr1.append(elem)
+        return arr1
 
     @staticmethod
     def __validate_params(tasks: list[StagedTask]) -> None:
