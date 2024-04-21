@@ -55,10 +55,50 @@ class ConveyorSchedule(AbstractSchedule):
     def __fill_schedule(self, tasks: list[StagedTask]) -> None:
         """Процедура составляет расписание из элементов ScheduleItem для каждого
         исполнителя, согласно алгоритму Джонсона."""
-        pass
+
+        first_worker, second_worker = self._executor_schedule[0], self._executor_schedule[1]
+        first_time, second_time = 0, 0
+        for i in tasks:
+            first_worker.append(ScheduleItem(i, first_time, i.stage_duration(0)))
+            first_time += i.stage_duration(0)
+            if not second_worker:
+                second_worker.append(ScheduleItem(None, second_time, i.stage_duration(0), True))
+                second_time += i.stage_duration(0)
+                second_worker.append(ScheduleItem(i, second_time, i.stage_duration(1)))
+                second_time += i.stage_duration(1)
+            elif second_time < first_time:
+                second_worker.append(ScheduleItem(None,second_time, first_time - second_time, True))
+                second_time += first_time - second_time
+                second_worker.append(ScheduleItem(i, second_time, i.stage_duration(1)))
+                second_time += i.stage_duration(1)
+            else:
+                second_worker.append(ScheduleItem(i,second_time,i.stage_duration(1)))
+                second_time += i.stage_duration(1)
+        first_worker.append(ScheduleItem(None,first_time,second_time-first_time,True))
 
     @staticmethod
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
+        first_group, second_group = [], []
+        for i in tasks:
+            if i.stage_duration(0) <= i.stage_duration(1):
+                first_group.append(i)
+            else:
+                second_group.append(i)
+        def item_sort_by_first(i):
+            return i.stage_duration(0)
+        def item_sort_by_second(i):
+            return i.stage_duration(1)
+
+        first_group.sort(key=item_sort_by_first)
+        second_group.sort(key=item_sort_by_second, reverse=True)
+        sorted_tasks = []
+        for i in first_group:
+            sorted_tasks.append(i)
+        for i in second_group:
+            sorted_tasks.append(i)
+        return sorted_tasks
+
+
         """Возвращает отсортированный список задач для применения
         алгоритма Джонсона."""
         pass
@@ -84,14 +124,8 @@ if __name__ == '__main__':
 
     # Инициализируем входные данные для составления расписания
     tasks = [
-        StagedTask('a', [7, 2]),
-        StagedTask('b', [3, 4]),
-        StagedTask('c', [2, 5]),
-        StagedTask('d', [4, 1]),
-        StagedTask('e', [6, 6]),
-        StagedTask('f', [5, 3]),
-        StagedTask('g', [4, 5])
-    ]
+        StagedTask('a', [1, 1]),
+        StagedTask('b', [1, 1])]
 
     # Инициализируем экземпляр класса Schedule
     # при этом будет рассчитано расписание для каждого исполнителя
