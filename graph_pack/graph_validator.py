@@ -36,9 +36,10 @@ class GraphValidator:
                 return False
             root.append(edge[0])
 
-        if nx.is_forest(graph):
-            if not nx.is_directed_acyclic_graph(graph):
-                return False
+        try:
+            nx.find_cycle(graph)
+            return False
+        except nx.NetworkXNoCycle:
             return True
         return False
 
