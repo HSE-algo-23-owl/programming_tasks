@@ -61,7 +61,7 @@ class ConveyorSchedule(AbstractSchedule):
     def __sort_tasks(tasks: list[StagedTask]) -> list[StagedTask]:
         """Возвращает отсортированный список задач для применения
         алгоритма Джонсона."""
-        print()
+        pass
 
     @staticmethod
     def __validate_params(tasks: list[StagedTask]) -> None:
