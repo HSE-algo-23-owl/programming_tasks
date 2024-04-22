@@ -4,6 +4,7 @@ from graph_pack import GraphGenerator, GraphValidator
 from schedule_pack import LevelSchedule
 
 
+
 def main():
     print('Пример использования класса GraphGenerator')
 
