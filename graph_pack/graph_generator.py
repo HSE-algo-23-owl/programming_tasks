@@ -97,6 +97,7 @@ class GraphGenerator:
             names.append(name)
         return names
 
+
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
         """Выводит изображение графа."""
