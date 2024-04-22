@@ -1,4 +1,6 @@
 import random as rnd
+import time
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from math import log2
@@ -47,6 +49,7 @@ class GraphGenerator:
 
         depth = 1
         leafs = [list(), []]  # список листьев по уровням
+        existing_coordinates = []
 
         for i, color in enumerate(colors, start=1):  # генерация стоков
             node_name = names.pop(0)
@@ -61,7 +64,9 @@ class GraphGenerator:
 
             cnt_child = rnd.randint(1, int(log2(len(names)) // tree_count + 1))  # расчет количества потомков
 
-            x = parent_node["pos"][0] // (cnt_child * tree_count)  # расчет координаты расположения
+            x = parent_node["pos"][0] // (cnt_child * 2)  # расчет координаты расположения
+            if parent_name in [chr(97 + i) for i in range(tree_count)]:
+                x //= 4
             coordinates = []
 
             for i in range(1, cnt_child // 2 + 1):
@@ -77,7 +82,11 @@ class GraphGenerator:
 
             while cnt_child:
                 child_name = names.pop(rnd.randint(0, len(names)-1))
-                graph.add_node(child_name, color=parent_node['color'], pos=(coordinates.pop(0), depth*1000))
+                x_coord = coordinates.pop(0)
+                while (x_coord, depth*100) in existing_coordinates:  # пока присутствуют совпадающие координаты
+                    x_coord += 500
+                graph.add_node(child_name, color=parent_node['color'], pos=(x_coord, depth*100))
+                existing_coordinates.append((x_coord, depth*100))
                 leafs[-1].append(child_name)
                 graph.add_edge(child_name, parent_name)
 
@@ -86,11 +95,7 @@ class GraphGenerator:
             if not leafs[0]:  # если на уровне не осталось узлов
                 del leafs[0]  # удаляем уровень
 
-                parent_count = rnd.randint(1, min(len(leafs[0]), int(vertex_count / (tree_count * depth))))  # кол-во
-                # родителей на новом уровне
-
-                if parent_count == 0:
-                    return graph
+                parent_count = rnd.randint(1, int(vertex_count / (tree_count * depth)) + 1)  # кол-во родителей на новом уровне
 
                 if parent_count > len(leafs[0]):
                     parent_count = len(leafs[0])
