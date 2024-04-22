@@ -9,7 +9,21 @@ def get_win_sequence(input_string: str) -> str:
     :return: Строку, представляющую минимальную лексикографическую
     подпоследовательность исходной строки.
     """
-    pass
+    len_str, consq = input_string.split('\n')
+    len_str = int(len_str)
+    dupelgager = ""
+    for i in range(len_str):
+        dupelgager += consq[i]
+    ans = []
+    minm = dupelgager[0]
+    for i in range(0, len_str):
+        if dupelgager[i] < minm:
+            minm = dupelgager[i]
+            ans.append(dupelgager[i:])
+        elif dupelgager[i] == minm:
+            ans.append(dupelgager[i:])
+    ans = sorted(ans)
+    return ans[0]
 
 
 def get_water_volume(input_string: str) -> int:
@@ -22,11 +36,31 @@ def get_water_volume(input_string: str) -> int:
     :return: Целое число, представляющее объем воды (в блоках), который
     останется после дождя.
     """
-    pass
+    amount, height = input_string.split('\n')
+    amount = int(amount)
+    height = [int(i) for i in height.split()]
+    maxm = height[0]
+    maxid = 0
+    for i in range(amount):
+        if height[i] > maxm:
+            maxm = height[i]
+            maxid = i
+    nowmax = height[0]
+    water = 0
+    for i in range(maxid):
+        if nowmax <= height[i]:
+            nowmax = height[i]
+        water += nowmax - height[i]
+    nowmax = height[-1]
+    for i in range(amount - 1, maxid, -1):
+        if nowmax <= height[i]:
+            nowmax = height[i]
+        water += nowmax - height[i]
+    return water
 
 
 def main():
-    print(get_water_volume('11\n2 5 2 3 6 9 3 1 3 4 6'))  # 18
+    print(get_water_volume('11\n2 5 2 3 6 9 3 1 3 4 6'))
 
     print(get_win_sequence('4\nMAMA'))  # A
     print(get_win_sequence('4\nALLOALLO'))  # ALLO
