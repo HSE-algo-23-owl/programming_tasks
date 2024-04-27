@@ -28,13 +28,31 @@ class GraphValidator:
     def is_inverted_trees(graph: nx.Graph) -> bool:
         """Проверяет является ли граф обратно ориентированным деревом или
         лесом из обратно ориентированных деревьев."""
-        return GraphValidator.get_tree_count(graph) == 1
+        arr = []
+        for elem_edges in graph.edges():
+            flag = False
+            for elem_root in arr:
+                if elem_root == elem_edges[0]:
+                    flag = True
+                    break
+            if flag:
+                return False
+            arr.append(elem_edges[0])
+
+        if nx.is_forest(graph) and nx.is_directed_acyclic_graph(graph):
+            return True
+        return False
 
     @staticmethod
     def get_tree_count(graph: nx.Graph) -> int:
         """Возвращает количество деревьев в графе."""
-        components = nx.connected_components(graph.to_undirected())
-        return sum(1 for component in components if len(component) == 1)
+        try:
+            nx.find_cycle(graph)
+            raise ValueError(ERR_GRAPH_IS_NOT_INV_TREE)
+        except nx.NetworkXNoCycle:
+            pass
+        count = sum(1 for component in nx.connected_components(graph.to_undirected()))
+        return count
 
     @staticmethod
     def graph_has_loop(graph: nx.Graph) -> bool:
