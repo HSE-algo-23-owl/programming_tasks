@@ -21,6 +21,18 @@ class GraphGenerator:
     show_plot(graph: nx.Graph) -> None:
         Выводит изображение графа.
     """
+
+    @staticmethod
+    def is_reverse_oriented_forest(graph: nx.DiGraph) -> bool:
+        try:
+            is_forest = all(len(list(graph.predecessors(n))) <= 1 for n in graph.nodes())
+            has_no_cycles = not any(nx.simple_cycles(graph))
+            return is_forest and has_no_cycles
+        except Exception as e:
+            print(f"Error checking graph properties: {e}")
+            return False
+
+
     @staticmethod
     def generate_random_forest(tree_count: int = 3, vertex_count: int = 15)\
             -> nx.Graph:
@@ -42,7 +54,6 @@ class GraphGenerator:
             raise TypeError("Expected integer for tree_count")
         if tree_count < 1:
             raise ValueError("tree_count must be greater than zero")
-
         if not isinstance(vertex_count, int):
             raise TypeError("Expected integer for vertex_count")
         if vertex_count < 1:
@@ -59,52 +70,20 @@ class GraphGenerator:
         for node, color in zip(initial_vertices, vertex_colors):
             di_graph.nodes[node]['color'] = color
 
-        if vertex_count == tree_count:
-            start = tree_count
-            end = vertex_count
-        else:
-            start = tree_count
-            end = rnd.randint(tree_count + 1, vertex_count)
-
-        current_vertices = []
-        while start <= vertex_count:
+        start, end = tree_count, min(vertex_count, rnd.randint(tree_count + 1, vertex_count))
+        while start < vertex_count:
             current_vertices = vertex_labels[start:end]
-            if not current_vertices:
-                break
             for current_vertex in current_vertices:
                 chosen_vertex = rnd.choice(initial_vertices)
                 di_graph.add_edge(current_vertex, chosen_vertex)
                 di_graph.nodes[current_vertex]['color'] = di_graph.nodes[chosen_vertex]['color']
-            initial_vertices = current_vertices
-            start = end
-            end = rnd.randint(start, vertex_count)
-            if start == end and end != vertex_count:
-                end += 1
+            initial_vertices.extend(current_vertices)
+            start, end = end, min(vertex_count, rnd.randint(end + 1, vertex_count))
+
+        if not GraphGenerator.is_reverse_oriented_forest(di_graph):
+            raise ValueError("Generated graph does not form a reverse-oriented forest.")
 
         return di_graph
-
-    def generate_vertex_labels(count: int) -> list:
-        labels = []
-        for index in range(count):
-            number = index + 1
-            label = ''
-            while number > 0:
-                mod = number % 26
-                if mod == 0:
-                    label = 'z' + label
-                    number = (number // 26) - 1
-                else:
-                    label = 'abcdefghijklmnopqrstuvwxyz'[mod - 1] + label
-                    number //= 26
-            labels.append(label)
-        return labels
-
-    def fetch_colors(number_of_trees: int) -> list:
-        color_list = []
-        for _ in range(number_of_trees):
-            random_color = '#{:06x}'.format(rnd.randint(0, 0xFFFFFF))
-            color_list.append(random_color)
-        return color_list
 
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
