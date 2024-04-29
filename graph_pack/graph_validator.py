@@ -28,17 +28,35 @@ class GraphValidator:
     def is_inverted_trees(graph: nx.Graph) -> bool:
         """Проверяет является ли граф обратно ориентированным деревом или
         лесом из обратно ориентированных деревьев."""
-        pass
+        root = [edge[0] for edge in graph.edges()]
+        if len(root) != len(set(root)):
+            return False
+
+        if nx.is_forest(graph) and not(nx.is_directed_acyclic_graph(graph)):
+            return False
+        elif nx.is_forest(graph):
+            return True
+
+        return False
 
     @staticmethod
     def get_tree_count(graph: nx.Graph) -> int:
         """Возвращает количество деревьев в графе."""
-        pass
+        try:
+            nx.find_cycle(graph)
+            raise ValueError(ERR_GRAPH_IS_NOT_INV_TREE)
+        except nx.NetworkXNoCycle:
+            from networkx.algorithms.components import connected_components
+            return len(list(connected_components(graph.to_undirected())))
 
     @staticmethod
     def graph_has_loop(graph: nx.Graph) -> bool:
         """Проверяет наличие цикла в графе."""
-        pass
+        try:
+            nx.find_cycle(graph)
+            return True
+        except nx.NetworkXNoCycle:
+            return False
 
 
 if __name__ == '__main__':
