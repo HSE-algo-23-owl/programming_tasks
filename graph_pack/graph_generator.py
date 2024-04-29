@@ -8,20 +8,6 @@ from graph_pack.constants import CHARS, ERR_NOT_INT_TREE_CNT, \
     ERR_LESS_THAN_1_VERTEX_CNT, ERR_VERTEX_CNT_LESS_THAN_TREE_CNT
 
 
-class SimpleGraph:
-    def __init__(self):
-        self.nodes = {}
-        self.edges = {}
-
-    def add_node(self, node, color=None):
-        self.nodes[node] = {'color': color}
-        self.edges[node] = []
-
-    def add_edge(self, from_node, to_node):
-        if from_node in self.edges:
-            self.edges[from_node].append(to_node)
-
-
 class GraphGenerator:
     """Класс для генерации графа.
 
@@ -35,40 +21,6 @@ class GraphGenerator:
     show_plot(graph: nx.Graph) -> None:
         Выводит изображение графа.
     """
-
-    def validate_input(tree_count: int, vertex_count: int):
-        if not isinstance(tree_count, int):
-            raise TypeError(ERR_NOT_INT_TREE_CNT)
-        if tree_count < 1:
-            raise ValueError(ERR_LESS_THAN_1_TREE_CNT)
-        if not isinstance(vertex_count, int):
-            raise TypeError(ERR_NOT_INT_VERTEX_CNT)
-        if vertex_count < 1:
-            raise ValueError(ERR_LESS_THAN_1_VERTEX_CNT)
-        if vertex_count < tree_count:
-            raise ValueError(ERR_VERTEX_CNT_LESS_THAN_TREE_CNT)
-
-    @staticmethod
-    def get_names(vertex_count: int) -> list:
-        names = []
-        for i in range(vertex_count):
-            quotient = i + 1
-            name = ''
-            while quotient > 0:
-                remainder = quotient % 26
-                if remainder == 0:
-                    name = 'z' + name
-                    quotient = (quotient // 26) - 1
-                else:
-                    name = CHARS[remainder - 1] + name
-                    quotient = quotient // 26
-            names.append(name)
-        return names
-
-    @staticmethod
-    def get_colours(tree_count: int) -> list:
-        return ['#{:06x}'.format(rnd.randint(0, 0xFFFFFF)) for _ in range(tree_count)]
-
     @staticmethod
     def generate_random_forest(tree_count: int = 3, vertex_count: int = 15)\
             -> nx.Graph:
@@ -85,34 +37,68 @@ class GraphGenerator:
         меньше единицы, если количество вершин меньше чем количество деревьев.
         :return: Граф.
         """
-        GraphGenerator.validate_input(tree_count, vertex_count)
 
-        graph = SimpleGraph()
-        vertex_names = GraphGenerator.get_names(vertex_count)
-        vertex_colours = GraphGenerator.get_colours(tree_count)
+        # ERR_NOT_INT_TREE_CNT = "tree_count must be an integer"
+        # ERR_LESS_THAN_1_TREE_CNT = "tree_count must be at least 1"
+        # ERR_NOT_INT_VERTEX_CNT = "vertex_count must be an integer"
+        # ERR_LESS_THAN_1_VERTEX_CNT = "vertex_count must be at least 1"
+        # ERR_VERTEX_CNT_LESS_THAN_TREE_CNT = "vertex_count cannot be less than tree_count"
 
-        for vertex, colour in zip(vertex_names, vertex_colours):
-            graph.add_node(vertex, colour)
+        if not isinstance(tree_count, int):
+            raise TypeError(ERR_NOT_INT_TREE_CNT)
+        if tree_count < 1:
+            raise ValueError(ERR_LESS_THAN_1_TREE_CNT)
 
-        for vertex in vertex_names[tree_count:]:
-            graph.add_node(vertex)
+        if not isinstance(vertex_count, int):
+            raise TypeError(ERR_NOT_INT_VERTEX_CNT)
+        if vertex_count < 1:
+            raise ValueError(ERR_LESS_THAN_1_VERTEX_CNT)
+        if vertex_count < tree_count:
+            raise ValueError(ERR_VERTEX_CNT_LESS_THAN_TREE_CNT)
 
-        previous_vertex = vertex_names[:tree_count]
-        left_border = tree_count
-        right_border = tree_count + 1 if vertex_count > tree_count else vertex_count
+        vertex_name_list = []
+        for i in range(vertex_count):
+            num = i + 1
+            vertex_name = ""
+            while num > 0:
+                r = num % 26
+                if r == 0:
+                    vertex_name = 'z' + vertex_name
+                    num = (num // 26) - 1
+                else:
+                    vertex_name = 'abcdefghijklmnopqrstuvwxyz'[r - 1] + vertex_name
+                    num //= 26
+            vertex_name_list.append(vertex_name)
 
-        while left_border < vertex_count:
-            present_vertex = vertex_names[left_border:right_border]
-            for vertex in present_vertex:
-                target_vertex = rnd.choice(previous_vertex)
-                graph.add_edge(target_vertex, vertex)
-                graph.nodes[vertex]['color'] = graph.nodes[target_vertex]['color']
+        vertex_colour_list = ['#{:06x}'.format(rnd.randint(0, 0xFFFFFF)) for _ in range(tree_count)]
 
-            previous_vertex = present_vertex
-            left_border = right_border
-            right_border = rnd.randint(left_border + 1, vertex_count) if right_border < vertex_count else vertex_count
+        directed_graph = nx.DiGraph()
+        directed_graph.add_nodes_from(vertex_name_list)
+        previous_vertices = vertex_name_list[:tree_count]
+        for vertex, colour in zip(previous_vertices, vertex_colour_list):
+            directed_graph.nodes[vertex]['color'] = colour
 
-        return graph
+        if vertex_count == tree_count:
+            left = tree_count
+            right = vertex_count
+        else:
+            left = tree_count
+            right = rnd.randint(tree_count + 1, vertex_count)
+        while left <= vertex_count:
+            current_vertices = vertex_name_list[left:right]
+            if not current_vertices:
+                break
+            for current_vertex in current_vertices:
+                target = rnd.choice(previous_vertices)
+                directed_graph.add_edge(current_vertex, target)
+                directed_graph.nodes[current_vertex]['color'] = directed_graph.nodes[target]['color']
+            previous_vertices = current_vertices
+            left = right
+            right = rnd.randint(left, vertex_count)
+            if left == right and right != vertex_count:
+                right += 1
+
+        graph = directed_graph
 
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
