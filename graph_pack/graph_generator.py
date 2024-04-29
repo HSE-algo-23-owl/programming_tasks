@@ -4,7 +4,7 @@ import string
 
 import networkx as nx
 import matplotlib.pyplot as plt
-
+from bokeh.palettes import Spectral
 
 from graph_pack.constants import CHARS, ERR_NOT_INT_TREE_CNT, \
     ERR_LESS_THAN_1_TREE_CNT, ERR_NOT_INT_VERTEX_CNT, \
@@ -57,42 +57,41 @@ class GraphGenerator:
         elif tree_count > vertex_count:
             raise ValueError(ERR_VERTEX_CNT_LESS_THAN_TREE_CNT)
 
-        trees = []
+        def generate_unique_name(length=3):
+            return ''.join(random.choices(string.ascii_lowercase, k=length))
 
-        def generate_tree():
-            tree = nx.DiGraph()
-            vertices = [random.choice(string.ascii_uppercase) for _ in range(vertex_count)]
-            tree.add_nodes_from(vertices)
-            root = vertices[0]
-            for v in vertices[1:]:
-                parent = random.choice(vertices[:vertices.index(v)])
-                tree.add_edge(parent, v)
-            return tree
+        def calculate_name_length(total_nodes):
+            return max(1, len(str(total_nodes)))  # Минимальная длина, чтобы вместить уникальные имена
 
-        # Generate trees
-        for _ in range(tree_count):
-            tree = generate_tree()
-            trees.append(tree)
+        def generate_uq_name(names):
+            name = generate_unique_name()
+            while name in names:
+                name = generate_unique_name()
+            return name
 
         forest = nx.DiGraph()
-        for i, tree in enumerate(trees):
-            forest = nx.compose(forest, tree)
 
-        # Assign colors to nodes in the same tree
-        colors = {}
-        for i, tree in enumerate(trees):
-            color = plt.cm.get_cmap('tab20', tree_count)(i % 20)  # To limit colors to 20 distinct colors
-            for node in tree.nodes():
-                colors[node] = color
+        # Множество для проверки уникальности имен
+        unique_names = set()
 
-        plt.figure()
-        pos = nx.spring_layout(forest)
-        nx.draw(forest, pos, with_labels=True, node_color=[colors.get(node) for node in forest.nodes()],
-                cmap=plt.get_cmap('tab20'), node_size=1000)
-        plt.show()
+        # Генерация деревьев
+        for tree_index in range(tree_count):
+            color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
+            root = generate_uq_name(unique_names)
+            unique_names.add(root)
+            forest.add_node(root, color=color, pos=(0, -tree_index))
+            last_node = root
+
+            for i in range(1, vertex_count):
+                cur_node = generate_uq_name(unique_names)
+                unique_names.add(cur_node)
+                forest.add_node(cur_node, color=color, pos=(i, -tree_index))
+                forest.add_edge(cur_node, last_node)
+
+                if random.randint(0, 3) == 2:
+                    last_node = cur_node
 
         return forest
-
 
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
