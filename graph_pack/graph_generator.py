@@ -38,67 +38,73 @@ class GraphGenerator:
         :return: Граф.
         """
 
-        # ERR_NOT_INT_TREE_CNT = "tree_count must be an integer"
-        # ERR_LESS_THAN_1_TREE_CNT = "tree_count must be at least 1"
-        # ERR_NOT_INT_VERTEX_CNT = "vertex_count must be an integer"
-        # ERR_LESS_THAN_1_VERTEX_CNT = "vertex_count must be at least 1"
-        # ERR_VERTEX_CNT_LESS_THAN_TREE_CNT = "vertex_count cannot be less than tree_count"
-
         if not isinstance(tree_count, int):
-            raise TypeError(ERR_NOT_INT_TREE_CNT)
+            raise TypeError("Expected integer for tree_count")
         if tree_count < 1:
-            raise ValueError(ERR_LESS_THAN_1_TREE_CNT)
+            raise ValueError("tree_count must be greater than zero")
 
         if not isinstance(vertex_count, int):
-            raise TypeError(ERR_NOT_INT_VERTEX_CNT)
+            raise TypeError("Expected integer for vertex_count")
         if vertex_count < 1:
-            raise ValueError(ERR_LESS_THAN_1_VERTEX_CNT)
+            raise ValueError("vertex_count must be greater than zero")
         if vertex_count < tree_count:
-            raise ValueError(ERR_VERTEX_CNT_LESS_THAN_TREE_CNT)
+            raise ValueError("vertex_count cannot be less than tree_count")
 
-        vertex_name_list = []
-        for i in range(vertex_count):
-            num = i + 1
-            vertex_name = ""
-            while num > 0:
-                r = num % 26
-                if r == 0:
-                    vertex_name = 'z' + vertex_name
-                    num = (num // 26) - 1
-                else:
-                    vertex_name = 'abcdefghijklmnopqrstuvwxyz'[r - 1] + vertex_name
-                    num //= 26
-            vertex_name_list.append(vertex_name)
+        vertex_labels = GraphGenerator.generate_vertex_labels(vertex_count)
+        vertex_colors = GraphGenerator.fetch_colors(tree_count)
 
-        vertex_colour_list = ['#{:06x}'.format(rnd.randint(0, 0xFFFFFF)) for _ in range(tree_count)]
-
-        directed_graph = nx.DiGraph()
-        directed_graph.add_nodes_from(vertex_name_list)
-        previous_vertices = vertex_name_list[:tree_count]
-        for vertex, colour in zip(previous_vertices, vertex_colour_list):
-            directed_graph.nodes[vertex]['color'] = colour
+        di_graph = nx.DiGraph()
+        di_graph.add_nodes_from(vertex_labels)
+        initial_vertices = vertex_labels[:tree_count]
+        for node, color in zip(initial_vertices, vertex_colors):
+            di_graph.nodes[node]['color'] = color
 
         if vertex_count == tree_count:
-            left = tree_count
-            right = vertex_count
+            start = tree_count
+            end = vertex_count
         else:
-            left = tree_count
-            right = rnd.randint(tree_count + 1, vertex_count)
-        while left <= vertex_count:
-            current_vertices = vertex_name_list[left:right]
+            start = tree_count
+            end = rnd.randint(tree_count + 1, vertex_count)
+
+        current_vertices = []
+        while start <= vertex_count:
+            current_vertices = vertex_labels[start:end]
             if not current_vertices:
                 break
             for current_vertex in current_vertices:
-                target = rnd.choice(previous_vertices)
-                directed_graph.add_edge(current_vertex, target)
-                directed_graph.nodes[current_vertex]['color'] = directed_graph.nodes[target]['color']
-            previous_vertices = current_vertices
-            left = right
-            right = rnd.randint(left, vertex_count)
-            if left == right and right != vertex_count:
-                right += 1
+                chosen_vertex = rnd.choice(initial_vertices)
+                di_graph.add_edge(current_vertex, chosen_vertex)
+                di_graph.nodes[current_vertex]['color'] = di_graph.nodes[chosen_vertex]['color']
+            initial_vertices = current_vertices
+            start = end
+            end = rnd.randint(start, vertex_count)
+            if start == end and end != vertex_count:
+                end += 1
 
-        graph = directed_graph
+        return di_graph
+
+    def generate_vertex_labels(count: int) -> list:
+        labels = []
+        for index in range(count):
+            number = index + 1
+            label = ''
+            while number > 0:
+                mod = number % 26
+                if mod == 0:
+                    label = 'z' + label
+                    number = (number // 26) - 1
+                else:
+                    label = 'abcdefghijklmnopqrstuvwxyz'[mod - 1] + label
+                    number //= 26
+            labels.append(label)
+        return labels
+
+    def fetch_colors(number_of_trees: int) -> list:
+        color_list = []
+        for _ in range(number_of_trees):
+            random_color = '#{:06x}'.format(rnd.randint(0, 0xFFFFFF))
+            color_list.append(random_color)
+        return color_list
 
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
