@@ -13,6 +13,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.11
@@ -20,7 +21,10 @@ jobs:
       with:
         python-version: '3.11'
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the test if there are Python syntax errors or undefined names
