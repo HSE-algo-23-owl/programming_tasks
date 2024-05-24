@@ -93,11 +93,10 @@ if __name__ == '__main__':
     costs = [17, 6, 11, 10, 5, 8, 6]
     weight_limit = 30
     get_knapsack(weights, costs, weight_limit)
-
-  print('Пример решения задачи о рюкзаке\n')
-  print(f'Веса предметов для комплектования рюкзака: {weights}')
-  print(f'Стоимости предметов для комплектования рюкзака: {costs}')
-  print(f'Ограничение вместимости рюкзака: {weight_limit}')
-  result = get_knapsack(weights, costs, weight_limit)
-  print(f'Максимальная стоимость: {result[COST]}, '
-      f'индексы предметов: {result[ITEMS]}')
+    print('Пример решения задачи о рюкзаке\n')
+    print(f'Веса предметов для комплектования рюкзака: {weights}')
+    print(f'Стоимости предметов для комплектования рюкзака: {costs}')
+    print(f'Ограничение вместимости рюкзака: {weight_limit}')
+    result = get_knapsack(weights, costs, weight_limit)
+    print(f'Максимальная стоимость: {result[COST]}, '
+          f'индексы предметов: {result[ITEMS]}')
