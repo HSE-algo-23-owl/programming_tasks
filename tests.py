@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import unittest
 
 from main import get_knapsack, COST, ITEMS, ERR_LENGTHS_NOT_EQUAL, \
     ERR_NOT_INT_WEIGHT_LIMIT, ERR_NOT_POS_WEIGHT_LIMIT, ERR_LESS_WEIGHT_LIMIT, \
     ERR_NOT_LIST_TEMPL, ERR_EMPTY_LIST_TEMPL, ERR_NOT_INT_TEMPL, WEIGHTS, \
-    COSTS, ERR_NOT_POS_TEMPL
+    COSTS, ERR_NOT_POS_TEMPL,MAX_ITEMS,ERR_TOO_MANY_ITEMS
 
 
 class TestKnapsack(unittest.TestCase):
@@ -146,6 +148,13 @@ class TestKnapsack(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             get_knapsack([2], [1], 1)
         self.assertEqual(ERR_LESS_WEIGHT_LIMIT, str(error.exception))
+
+    def test_too_many_items(self):
+        """Проверяет выброс исключения при передаче слишком большого
+        количества предметов."""
+        with self.assertRaises(ValueError) as error:
+            get_knapsack([1] * (MAX_ITEMS + 1), [1] * (MAX_ITEMS + 1), 1)
+        self.assertEqual(ERR_TOO_MANY_ITEMS, str(error.exception))
 
     def test_2(self):
         """Проверка решения задачи о рюкзаке для двух предметов."""
