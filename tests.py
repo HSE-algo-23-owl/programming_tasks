@@ -3,7 +3,7 @@ import unittest
 from main import get_knapsack, COST, ITEMS, ERR_LENGTHS_NOT_EQUAL, \
     ERR_NOT_INT_WEIGHT_LIMIT, ERR_NOT_POS_WEIGHT_LIMIT, ERR_LESS_WEIGHT_LIMIT, \
     ERR_NOT_LIST_TEMPL, ERR_EMPTY_LIST_TEMPL, ERR_NOT_INT_TEMPL, WEIGHTS, \
-    COSTS, ERR_NOT_POS_TEMPL
+    COSTS, ERR_NOT_POS_TEMPL, ERR_LEN
 
 
 class TestKnapsack(unittest.TestCase):
@@ -110,6 +110,14 @@ class TestKnapsack(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             get_knapsack([1], [-10], 1)
         self.assertEqual(ERR_NOT_POS_TEMPL.format(COSTS),
+                         str(error.exception))
+    def test_len_weights(self):
+        """Проверяет выброс исключения при передаче предметов больше чем 21."""
+        with self.assertRaises(ValueError) as error:
+            weights = [11, 4, 8, 6, 3, 5, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 22]
+            costs = [17, 6, 11, 10, 5, 8, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 71, 18, 19, 20, 22, 22]
+            get_knapsack(weights, costs, 10)
+        self.assertEqual(ERR_LEN,
                          str(error.exception))
 
     def test_diff_len(self):

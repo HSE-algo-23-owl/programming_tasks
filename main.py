@@ -12,27 +12,19 @@ ERR_NOT_LIST_TEMPL = '{0} не являются списком'
 ERR_EMPTY_LIST_TEMPL = '{0} являются пустым списком'
 ERR_NOT_INT_TEMPL = '{0} содержат не числовое значение'
 ERR_NOT_POS_TEMPL = '{0} содержат нулевое или отрицательное значение'
-
-
+ERR_LEN = "Количество предметов превышает лимит - 21 предметов в рюкзаке"
+def is_list(list_to_check, name):
+    if not isinstance(list_to_check, list):
+        raise TypeError(ERR_NOT_LIST_TEMPL.format(name))
+    if not all(isinstance(element, int) for element in list_to_check):
+        raise TypeError(ERR_NOT_INT_TEMPL.format(name))
+    if len(list_to_check) == 0:
+        raise ValueError(ERR_EMPTY_LIST_TEMPL.format(name))
+    if 0 in list_to_check or any(element < 0 for element in list_to_check):
+        raise ValueError(ERR_NOT_POS_TEMPL.format(name))
 def validation(weights: list[int], costs: list[int], weight_limit: int) -> None:
-    if not isinstance(weights, list):
-        raise TypeError("Веса не являются списком")
-    if not all(isinstance(element, int) for element in weights):
-        raise TypeError("Веса содержат не числовое значение")
-    if not isinstance(costs, list):
-        raise TypeError("Стоимости не являются списком")
-    if not all(isinstance(element, int) for element in costs):
-        raise TypeError("Стоимости содержат не числовое значение")
-    if len(weights) == 0:
-        raise ValueError("Веса являются пустым списком")
-    if len(costs) == 0:
-        raise ValueError("Стоимости являются пустым списком")
-    if 0 in weights or any(element < 0 for element in weights):
-        raise ValueError("Веса содержат нулевое или отрицательное значение")
-    if 0 in costs or any(element < 0 for element in costs):
-        raise ValueError("Стоимости содержат нулевое или отрицательное значение")
-    if len(weights) != len(costs):
-        raise ValueError(ERR_LENGTHS_NOT_EQUAL)
+    is_list(weights, WEIGHTS)
+    is_list(costs, COSTS)
     if len(weights) != len(costs):
         raise ValueError(ERR_LENGTHS_NOT_EQUAL)
     if not isinstance(weight_limit, int):
@@ -41,6 +33,10 @@ def validation(weights: list[int], costs: list[int], weight_limit: int) -> None:
         raise ValueError(ERR_NOT_POS_WEIGHT_LIMIT)
     if min(weights) > weight_limit:
         raise ValueError(ERR_LESS_WEIGHT_LIMIT)
+    check_len(weights)
+def check_len(weight, limit =21):
+    if len(weight) > limit:
+        raise ValueError(ERR_LEN)
 
 def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
         dict[str, int | list[int]]:
@@ -89,8 +85,8 @@ def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
 
 
 if __name__ == '__main__':
-    weights = [11, 4, 8, 6, 3, 5, 5]
-    costs = [17, 6, 11, 10, 5, 8, 6]
+    weights = [11, 4, 8, 6, 3, 5, 5, 8 , 9 ,10, 11, 12, 13 ,14, 15 ,16 , 17, 18 ,19 ,20, 22,22]
+    costs = [17, 6, 11, 10, 5, 8, 6, 8 ,9 ,10, 11, 12, 13 ,14, 15, 16 , 71, 18 ,19, 20,22,22 ]
     weight_limit = 30
     get_knapsack(weights, costs, weight_limit)
     print('Пример решения задачи о рюкзаке\n')
