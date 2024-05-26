@@ -14,7 +14,7 @@ ERR_NOT_INT_TEMPL = '{0} содержат не числовое значение
 ERR_NOT_POS_TEMPL = '{0} содержат нулевое или отрицательное значение'
 
 
-def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
+def get_knapsack(weights: list[int], costs: list[int], weight_limit: int, max_items: int = 20) -> \
         dict[str, int | list[int]]:
     """Решает задачу о рюкзаке с использованием полного перебора.
 
@@ -29,7 +29,53 @@ def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
     рюкзаке, items - список с индексами предметов, обеспечивающих максимальную
     стоимость.
     """
-    pass
+    if not isinstance(weights, list) or not isinstance(costs, list):
+        raise TypeError(ERR_NOT_LIST_TEMPL.format('Веса' if not isinstance(weights, list) else 'Стоимости'))
+    if not weights:
+        raise ValueError(ERR_EMPTY_LIST_TEMPL.format('Веса'))
+    if not costs:
+        raise ValueError(ERR_EMPTY_LIST_TEMPL.format('Стоимости'))
+    if len(weights) != len(costs):
+        raise ValueError(ERR_LENGTHS_NOT_EQUAL)
+    if not all(isinstance(w, int) for w in weights):
+        raise TypeError(ERR_NOT_INT_TEMPL.format('Веса'))
+    if not all(isinstance(c, int) for c in costs):
+        raise TypeError(ERR_NOT_INT_TEMPL.format('Стоимости'))
+    if any(w <= 0 for w in weights):
+        raise ValueError(ERR_NOT_POS_TEMPL.format('Веса'))
+    if any(c <= 0 for c in costs):
+        raise ValueError(ERR_NOT_POS_TEMPL.format('Стоимости'))
+    if not isinstance(weight_limit, int):
+        raise TypeError(ERR_NOT_INT_WEIGHT_LIMIT)
+    if weight_limit < 1:
+        raise ValueError(ERR_NOT_POS_WEIGHT_LIMIT)
+    if weight_limit < min(weights):
+        raise ValueError(ERR_LESS_WEIGHT_LIMIT)
+    if len(weights) > max_items:
+        raise ValueError(f'Количество предметов превышает {max_items}')
+
+    n = len(weights)
+    max_cost = 0
+    best_combination = []
+
+    def generate_combinations(arr):
+        result = [[]]
+        for item in arr:
+            new_combinations = [current + [item] for current in result]
+            result.extend(new_combinations)
+        return result
+
+    all_combinations = generate_combinations(list(range(n)))
+
+    for combination in all_combinations:
+        current_weight = sum(weights[i] for i in combination)
+        if current_weight <= weight_limit:
+            current_cost = sum(costs[i] for i in combination)
+            if current_cost > max_cost:
+                max_cost = current_cost
+                best_combination = combination
+
+    return {COST: max_cost, ITEMS: best_combination}
 
 
 if __name__ == '__main__':

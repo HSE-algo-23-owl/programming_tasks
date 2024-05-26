@@ -207,6 +207,53 @@ class TestKnapsack(unittest.TestCase):
         self.assertTrue(TestKnapsack.__check_set(weights, costs, weight_limit,
                                                  result))
 
+    def test_empty_lists(self):
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack([], [], 10)
+        self.assertEqual(str(cm.exception), ERR_EMPTY_LIST_TEMPL.format('Веса'))
+
+    def test_different_lengths(self):
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack([1, 2], [10], 10)
+        self.assertEqual(str(cm.exception), ERR_LENGTHS_NOT_EQUAL)
+
+    def test_non_int_weights(self):
+        with self.assertRaises(TypeError) as cm:
+            get_knapsack(['a', 2], [10, 20], 10)
+        self.assertEqual(str(cm.exception), ERR_NOT_INT_TEMPL.format('Веса'))
+
+    def test_non_int_costs(self):
+        with self.assertRaises(TypeError) as cm:
+            get_knapsack([1, 2], ['a', 20], 10)
+        self.assertEqual(str(cm.exception), ERR_NOT_INT_TEMPL.format('Стоимости'))
+
+    def test_non_int_weight_limit(self):
+        with self.assertRaises(TypeError) as cm:
+            get_knapsack([1, 2], [10, 20], 'a')
+        self.assertEqual(str(cm.exception), ERR_NOT_INT_WEIGHT_LIMIT)
+
+    def test_negative_weight(self):
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack([-1, 2], [10, 20], 10)
+        self.assertEqual(str(cm.exception), ERR_NOT_POS_TEMPL.format('Веса'))
+
+    def test_negative_cost(self):
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack([1, 2], [-10, 20], 10)
+        self.assertEqual(str(cm.exception), ERR_NOT_POS_TEMPL.format('Стоимости'))
+
+    def test_weight_limit_less_than_min_weight(self):
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack([5, 10], [10, 20], 1)
+        self.assertEqual(str(cm.exception), ERR_LESS_WEIGHT_LIMIT)
+
+    def test_too_many_items(self):
+        weights = [1] * 21
+        costs = [1] * 21
+        weight_limit = 10
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack(weights, costs, weight_limit)
+        self.assertEqual(str(cm.exception), 'Количество предметов превышает 20')
 
 if __name__ == '__main__':
     unittest.main()
