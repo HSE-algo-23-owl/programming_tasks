@@ -2,7 +2,7 @@ import unittest
 import random
 
 from main import get_salesman_path, DISTANCE, PATH, NullableNumber, \
-    PARAM_ERR_MSG, NEG_VALUE_ERR_MSG
+    PARAM_ERR_MSG, NEG_VALUE_ERR_MSG, MAX_VERTEXES_ERR_MSG
 
 
 class TestSalesManPath(unittest.TestCase):
@@ -151,6 +151,10 @@ class TestSalesManPath(unittest.TestCase):
         self.assertEqual(result[DISTANCE], distance)
         self.assertTrue(self.__check_path(matrix, result))
 
-
+    def test_exceeding_vertex_limit(self):
+        matrix = [[None] * 16 for _ in range(16)]
+        with self.assertRaises(ValueError) as cm:
+            get_salesman_path(matrix)
+        self.assertEqual(str(cm.exception), MAX_VERTEXES_ERR_MSG)
 if __name__ == '__main__':
     unittest.main()
