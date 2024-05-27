@@ -2,7 +2,7 @@ import unittest
 import random
 
 from main import get_salesman_path, DISTANCE, PATH, NullableNumber, \
-    PARAM_ERR_MSG, NEG_VALUE_ERR_MSG
+    PARAM_ERR_MSG, NEG_VALUE_ERR_MSG, MAX_VERTICES
 
 
 class TestSalesManPath(unittest.TestCase):
@@ -24,6 +24,8 @@ class TestSalesManPath(unittest.TestCase):
         for i in range(1, len(path)):
             src = path[i - 1]
             trg = path[i]
+            if matrix[src][trg] is None:
+                return False
             summ += matrix[src][trg]
         if summ != distance:
             return False
@@ -149,6 +151,23 @@ class TestSalesManPath(unittest.TestCase):
         result = get_salesman_path(matrix)
 
         self.assertEqual(result[DISTANCE], distance)
+        self.assertTrue(self.__check_path(matrix, result))
+
+    def test_too_many_vertices(self):
+        """Проверяет выброс исключения при превышении максимального количества вершин."""
+        matrix = [[None for _ in range(MAX_VERTICES + 1)] for _ in range(MAX_VERTICES + 1)]
+        with self.assertRaises(ValueError) as context:
+            get_salesman_path(matrix)
+        self.assertEqual(str(context.exception), f'Количество вершин в графе не может превышать {MAX_VERTICES}')
+
+    def test_max_vertices(self):
+        """Проверяет построение маршрута в матрице с максимальным количеством вершин."""
+        order = MAX_VERTICES
+        matrix = [[random.uniform(1, 100) for _ in range(order)] for _ in range(order)]
+        for i in range(order):
+            matrix[i][i] = None
+        result = get_salesman_path(matrix)
+        self.assertTrue(result[DISTANCE] > 0)
         self.assertTrue(self.__check_path(matrix, result))
 
 
