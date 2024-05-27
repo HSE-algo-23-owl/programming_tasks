@@ -207,6 +207,15 @@ class TestKnapsack(unittest.TestCase):
         self.assertTrue(TestKnapsack.__check_set(weights, costs, weight_limit,
                                                  result))
 
+    def test_max_items_exceeded(self):
+        weights = [11, 4, 8, 6, 3, 5, 5, 7, 2, 10, 12, 9, 14, 1, 15, 13, 18, 17, 16, 19, 20]
+        costs = [17, 6, 11, 10, 5, 8, 6, 13, 2, 15, 16, 9, 14, 1, 12, 13, 19, 18, 17, 20, 21]
+        weight_limit = 50
+        max_items = 20
+        with self.assertRaises(ValueError) as context:
+            get_knapsack(weights, costs, weight_limit, max_items)
+        self.assertEqual(str(context.exception), f'Количество предметов превышает {max_items}')
+
 
 if __name__ == '__main__':
     unittest.main()
