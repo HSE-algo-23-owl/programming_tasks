@@ -52,7 +52,7 @@ def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
     :raise TypeError: Если веса или стоимости не являются списком с числовыми
     значениями, если ограничение вместимости не является целым числом.
     :raise ValueError: Если в списках присутствует нулевое или отрицательное
-    значение.
+    значение, если количество предметов превышает 20.
     :return: Словарь с ключами: cost - максимальная стоимость предметов в
     рюкзаке, items - список с индексами предметов, обеспечивающих максимальную
     стоимость.
@@ -71,13 +71,17 @@ def get_knapsack(weights: list[int], costs: list[int], weight_limit: int) -> \
 
 
 if __name__ == '__main__':
-    weights = [11, 4, 8, 6, 3, 5, 5]
-    costs = [17, 6, 11, 10, 5, 8, 6]
+    weights = [11, 4, 8, 6, 3, 5, 5, 222]  # Добавлен большой элемент для проверки ограничения
+    costs = [17, 6, 11, 10, 5, 8, 6, 30]  # Соответствующая стоимость большого элемента
     weight_limit = 30
-    print('Пример решения задачи о рюкзаке\n')
-    print(f'Веса предметов для комплектования рюкзака: {weights}')
-    print(f'Стоимости предметов для комплектования рюкзака: {costs}')
-    print(f'Ограничение вместимости рюкзака: {weight_limit}')
-    result = get_knapsack(weights, costs, weight_limit)
-    print(f'Максимальная стоимость: {result[COST]}, '
-          f'индексы предметов: {result[ITEMS]}')
+    try:
+        print('Пример решения задачи о рюкзаке\n')
+        print(f'Веса предметов для комплектования рюкзака: {weights}')
+        print(f'Стоимости предметов для комплектования рюкзака: {costs}')
+        print(f'Ограничение вместимости рюкзака: {weight_limit}')
+        result = get_knapsack(weights, costs, weight_limit)
+        print(f'Максимальная стоимость: {result[COST]}, '
+              f'индексы предметов: {result[ITEMS]}')
+    except ValueError as e:
+        print(f"Ошибка: {e}")
+
