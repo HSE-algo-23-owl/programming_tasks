@@ -30,21 +30,21 @@ def get_knapsack(weights: list[int], costs: list[int], weight_limit: int, max_it
     стоимость.
     """
     if not isinstance(weights, list) or not isinstance(costs, list):
-        raise TypeError(ERR_NOT_LIST_TEMPL.format('Веса' if not isinstance(weights, list) else 'Стоимости'))
+        raise TypeError(ERR_NOT_LIST_TEMPL.format(WEIGHTS if not isinstance(weights, list) else COSTS))
     if not weights:
-        raise ValueError(ERR_EMPTY_LIST_TEMPL.format('Веса'))
+        raise ValueError(ERR_EMPTY_LIST_TEMPL.format(WEIGHTS))
     if not costs:
-        raise ValueError(ERR_EMPTY_LIST_TEMPL.format('Стоимости'))
+        raise ValueError(ERR_EMPTY_LIST_TEMPL.format(COSTS))
     if len(weights) != len(costs):
         raise ValueError(ERR_LENGTHS_NOT_EQUAL)
     if not all(isinstance(w, int) for w in weights):
-        raise TypeError(ERR_NOT_INT_TEMPL.format('Веса'))
+        raise TypeError(ERR_NOT_INT_TEMPL.format(WEIGHTS))
     if not all(isinstance(c, int) for c in costs):
-        raise TypeError(ERR_NOT_INT_TEMPL.format('Стоимости'))
+        raise TypeError(ERR_NOT_INT_TEMPL.format(COSTS))
     if any(w <= 0 for w in weights):
-        raise ValueError(ERR_NOT_POS_TEMPL.format('Веса'))
+        raise ValueError(ERR_NOT_POS_TEMPL.format(WEIGHTS))
     if any(c <= 0 for c in costs):
-        raise ValueError(ERR_NOT_POS_TEMPL.format('Стоимости'))
+        raise ValueError(ERR_NOT_POS_TEMPL.format(COSTS))
     if not isinstance(weight_limit, int):
         raise TypeError(ERR_NOT_INT_WEIGHT_LIMIT)
     if weight_limit < 1:
