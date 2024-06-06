@@ -1,5 +1,6 @@
 from permutations import generate_permutations
 
+from permutations import generate_permutations
 
 NullableNumber = int | float | None
 
@@ -22,7 +23,64 @@ def get_salesman_path(dist_matrix: list[list[NullableNumber]]) -> \
     :return: Словарь с ключами: distance - кратчайшее расстояние,
     path - список с индексами вершин на кратчайшем маршруте.
     """
-    pass
+
+    n = len(dist_matrix)
+    if n == 1:
+        return {'distance': 0, 'path': [0]}
+
+    vertices = frozenset(range(1, n))
+    min_path = []
+    min_distance = float('inf')
+    generated_permutations = list(generate_permutations(vertices))
+    for permutations in generated_permutations:
+        current_distance = 0
+        if list(permutations) is None:
+            current_path = [0]
+        else:
+            current_path = [0] + list(permutations) + [0]
+        for i in range(n):
+            if dist_matrix[current_path[i]][current_path[i + 1]] is None:
+                current_distance = float('inf')
+                break
+            else:
+                current_distance += dist_matrix[current_path[i]][current_path[i + 1]]
+
+        if current_distance < min_distance:
+            min_distance = current_distance
+            min_path = current_path
+
+    if not min_path:
+        return {DISTANCE: None, PATH: []}
+
+    return {
+        DISTANCE: min_distance,
+        PATH: min_path
+    }
+
+
+def check(dist_matrix: list[list[NullableNumber]]):
+    if dist_matrix is None:
+        raise TypeError(PARAM_ERR_MSG)
+    if not isinstance(dist_matrix, list):
+        raise TypeError(PARAM_ERR_MSG)
+    if len(dist_matrix) == 0:
+        raise TypeError(PARAM_ERR_MSG)
+    if len(dist_matrix) != len(dist_matrix[0]):
+        raise TypeError(PARAM_ERR_MSG)
+    first_row_len = dist_matrix[0]
+    for row in dist_matrix:
+        if len(row) == 0:
+            raise TypeError(PARAM_ERR_MSG)
+        if len(row) != len(first_row_len):
+            raise TypeError(PARAM_ERR_MSG)
+        if not isinstance(row, list):
+            raise TypeError(PARAM_ERR_MSG)
+        for elem in row:
+            if not isinstance(elem, (int, float)) and elem is not None:
+                raise TypeError(PARAM_ERR_MSG)
+            if elem is not None:
+                if elem < 0:
+                    raise ValueError(NEG_VALUE_ERR_MSG)
 
 
 if __name__ == '__main__':
