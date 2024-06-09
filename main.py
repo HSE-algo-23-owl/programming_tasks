@@ -1,7 +1,5 @@
 from permutations import generate_permutations
 
-from permutations import generate_permutations
-
 NullableNumber = int | float | None
 
 INFINITY = float('inf')
@@ -23,7 +21,7 @@ def get_salesman_path(dist_matrix: list[list[NullableNumber]]) -> \
     :return: Словарь с ключами: distance - кратчайшее расстояние,
     path - список с индексами вершин на кратчайшем маршруте.
     """
-
+    check(dist_matrix)
     n = len(dist_matrix)
     if n == 1:
         return {'distance': 0, 'path': [0]}
