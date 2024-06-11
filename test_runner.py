@@ -2,6 +2,7 @@ from unittest import TestSuite, TestLoader, TextTestRunner
 
 from test.test_brute_force import TestBruteForce
 from test.test_genetic_solver import TestGeneticSolver
+from test.test_tournament import TestTournament
 from test.tests_validate import TestValidate
 
 
@@ -12,6 +13,7 @@ def suite():
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestValidate))
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestBruteForce))
     test_suite.addTest(TestLoader().loadTestsFromTestCase(TestGeneticSolver))
+    test_suite.addTest(TestLoader().loadTestsFromTestCase(TestTournament))
     return test_suite
 
 
