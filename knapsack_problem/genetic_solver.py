@@ -11,6 +11,7 @@ class GeneticSolver:
     быть запущен многократно для одного экземпляра.
     """
 
+
     def __init__(self, weights: list[int], costs: list[int], weight_limit: int):
         """Создает объект класса для решения задачи о рюкзаке.
         :param weights: Список весов предметов для рюкзака.
