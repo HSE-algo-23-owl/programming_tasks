@@ -207,6 +207,15 @@ class TestKnapsack(unittest.TestCase):
         self.assertTrue(TestKnapsack.__check_set(weights, costs, weight_limit,
                                                  result))
 
+    def test_too_many_items(self):
+        """ Проверка на ограничение входных данных"""
+        weights = [1] * 21
+        costs = [1] * 21
+        weight_limit = 10
+        with self.assertRaises(ValueError) as cm:
+            get_knapsack(weights, costs, weight_limit)
+        self.assertEqual(str(cm.exception), 'Количество предметов не должно превышать 21')
+
 
 if __name__ == '__main__':
     unittest.main()
