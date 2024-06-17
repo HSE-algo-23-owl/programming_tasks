@@ -15,19 +15,19 @@ COST = 'cost'
 ITEMS = 'items'
 
 # Параметры генетического алгоритма
-POPULATION_LIMIT = 888
+POPULATION_LIMIT = 600
 """Предельный размер популяции."""
 
 EPOCH_CNT = 100
 """Количество поколений по умолчанию."""
 
-ATTEMPTS = 1111
+ATTEMPTS = 500
 """Количество попыток генерации / мутации хромосом."""
 
 LEADER_STAGNATION_EPOCHS = 50
 """Количество поколений несменяемости лидера."""
 
-MAX_GENES_TO_MUTATE = 4
+MAX_GENES_TO_MUTATE = 2
 """Максимально допустимое количество генов для участия в мутации"""
 
 BRUTE_FORCE_BOUND = 5

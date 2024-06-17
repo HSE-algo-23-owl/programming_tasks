@@ -1,4 +1,5 @@
 import random as rnd
+from functools import lru_cache
 
 from knapsack_problem.constants import COST, ITEMS, POPULATION_LIMIT, EPOCH_CNT, \
     BRUTE_FORCE_BOUND, ATTEMPTS, LEADER_STAGNATION_EPOCHS, MAX_GENES_TO_MUTATE
@@ -58,7 +59,7 @@ class GeneticSolver:
         leader = self.__get_leader()
         leader_stagnation_epoch = 0
 
-        while epoch_cnt and len(self.population) > 2 and leader_stagnation_epoch < LEADER_STAGNATION_EPOCHS:
+        while epoch_cnt and len(self.population) >= 2 and leader_stagnation_epoch < LEADER_STAGNATION_EPOCHS:
             tournament_winners = self.__chromosome_selection()  # отбор особей для скрещивания турнирным методом
             descendants = self.__get_descendants(tournament_winners)  # скрещивание, формирование потомков
             self.__update_population(tournament_winners, descendants)  # обновление популяции, создание очередного поколения
@@ -95,15 +96,13 @@ class GeneticSolver:
         attempts = ATTEMPTS
 
         while len(population) < population_cnt and attempts:
-            attempts -= 1
-
             chromosome = self.__generate_chromosome()  # генерация особи
             fitness_func = self.__get_fitness_func(chromosome)  # получение фитнес-функции новой особи
 
-            if chromosome in population or not fitness_func:
-                continue
+            if fitness_func and chromosome not in population:
+                population[chromosome] = fitness_func
 
-            population.setdefault(chromosome, fitness_func)
+            attempts -= 1
 
         return population
 
@@ -114,6 +113,7 @@ class GeneticSolver:
         """
         return self.__mask.format(rnd.randint(1, 2**self.__item_cnt - 1))
 
+    @lru_cache(maxsize=None)
     def __get_fitness_func(self, chromosome: str) -> int:
         """Высчитывает фитнес-функцию особи.
 
@@ -131,33 +131,37 @@ class GeneticSolver:
         :return: Список особей-победителей турнира.
         """
         competitors = set(self.__population)
+        if len(competitors) <= 3:
+            return list(competitors)
+
         winners = set()
         while len(winners) < len(self.population) // 2:  # отбираем половину популяции
-            winner = tournament(list(competitors), lambda x, y: x if self.__get_fitness_func(x) > self.__get_fitness_func(y) else y)
+            winner = tournament((*competitors,),
+                                lambda x, y: x if self.__population[x] >= self.__population[y] else y)
             winners.add(winner)
             competitors.discard(winner)
         return list(winners)
 
-    def __get_descendants(self, tournament_winners: list[str]) -> list[str]:
+    def __get_descendants(self, tournament_winners: list[str]) -> set[str]:
         """Получает потомков путем скрещивания особей-родителей.
 
         :return: Список жизнеспособных потомков.
         """
         rnd.shuffle(tournament_winners)  # перемешивание особей
         tournament_winners = tournament_winners[:len(tournament_winners) // 2 * 2]  # срез для четного кол-ва особей
-        attempts = ATTEMPTS
+        attempts = ATTEMPTS // 2
         descendants = set()
 
         for i in range(1, len(tournament_winners), 2):
             first_descendant, second_descendant = self.__uniform_crossing(tournament_winners[i-1], tournament_winners[i])
 
-            while (first_descendant in descendants or not self.__get_fitness_func(first_descendant)) and attempts:
+            while not self.__get_fitness_func(first_descendant) and attempts:
                 first_descendant = self.__mutation(first_descendant)
                 attempts -= 1
 
-            attempts = ATTEMPTS
+            attempts = ATTEMPTS // 2
 
-            while (second_descendant in descendants or not self.__get_fitness_func(second_descendant)) and attempts:
+            while not self.__get_fitness_func(second_descendant) and attempts:
                 second_descendant = self.__mutation(second_descendant)
                 attempts -= 1
 
@@ -167,7 +171,7 @@ class GeneticSolver:
             if self.__get_fitness_func(second_descendant):
                 descendants.add(second_descendant)
 
-        return list(descendants)
+        return descendants
 
     @staticmethod
     def __mutation(chromosome: str) -> str:
@@ -200,23 +204,20 @@ class GeneticSolver:
 
         return ''.join(first_descendant), ''.join(second_descendant)
 
-    def __update_population(self, tournament_winners: list[str], descendants: list[str]) -> None:
+    def __update_population(self, tournament_winners: list[str], descendants: set[str]) -> None:
         """Обновляет популяцию, создает очередное поколение, состоящее из родителей и потомков.
 
         :param tournament_winners: Особи-родители, участвовавшиеся в скрещивании, победители турнира.
         :param descendants: Особи-потомки, получившиеся в результате скрещивания особей-родителей.
         """
         # новая популяция будет состоять из родителей и их потомков
-        new_population, descendants = set(tournament_winners), set(descendants)
+        new_population = set(tournament_winners)
 
-        # объединение родителей и потомков в одну популяцию в случае недобора нужного объема популяции
-        if len(new_population) + len(descendants) <= POPULATION_LIMIT:
-            new_population |= set(descendants)
-        else:
-            while len(new_population) < POPULATION_LIMIT:  # добавление потомков, пока есть свободное место
-                new_population.add(descendants.pop())
+        while descendants and len(new_population) < POPULATION_LIMIT:  # добавление потомков, пока есть свободное место
+            new_population.add(descendants.pop())
 
-        self.__population = {chromosome: self.__get_fitness_func(chromosome) for chromosome in new_population}
+        self.__population = {chromosome: self.__population.get(chromosome, self.__get_fitness_func(chromosome))
+                             for chromosome in new_population}
 
 
 if __name__ == '__main__':
