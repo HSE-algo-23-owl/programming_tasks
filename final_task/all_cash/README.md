@@ -75,9 +75,9 @@ matrix_0[2][3] = min(1, **∞** + 10) = 1
 matrix_0[3][1] = min(matrix_init[3,1], matrix_init[3][0] + matrix_init[0][1])
 matrix_0[3][1] = min(**∞**, **∞** + 5) = **∞**
 matrix_0[3][2] = min(matrix_init[3,2], matrix_init[3][0] + matrix_init[0][2])
-matrix_0[3][2] = min(**∞**, **∞** + **∞**) = 0
+matrix_0[3][2] = min(**∞**, **∞** + **∞**) = **∞**
 matrix_0[3][3] = min(matrix_init[3,3], matrix_init[3][0] + matrix_init[0][3])
-matrix_0[3][3] = min(1, **∞** + 10) = 1
+matrix_0[3][3] = min(0, **∞** + 10) = 0
 
 #### Matrix_1
 
@@ -87,6 +87,10 @@ matrix_0[3][3] = min(1, **∞** + 10) = 1
 | **1** | **∞** |   0   |   3   | **∞** |
 | **2** | **∞** | **∞** |   0   |   1   |
 | **3** | **∞** | **∞** | **∞** |   0   |
+
+matrix_1[0][0] = min(matrix_0[0,0], matrix_0[0][1] + matrix_0[1][0])
+matrix_1[0][0] = min(0, 5 + **∞**) = 0
+
 
 #### Matrix_2
 
