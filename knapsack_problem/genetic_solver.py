@@ -67,11 +67,12 @@ class GeneticSolver:
         if len(self.__weights) <= BRUTE_FORCE_BOUND:
             return brute_force(self.__weights, self.__costs, self.__weight_limit)  # Решение перебором
 
-        while not self.check_finish():
+        while not self.check_finish() and epoch_cnt != 0:
             self.find_parents()
             self.find_children()
             self.make_new_population()
             self.find_leader()
+            epoch_cnt -= 1
 
         leader = self.__leaders[-1]
         cost = self.find_fitness_function(leader)
