@@ -1,3 +1,4 @@
+import random
 import random as rnd
 import copy
 from knapsack_problem.constants import COST, ITEMS, POPULATION_LIMIT, EPOCH_CNT, \
@@ -49,7 +50,6 @@ class GeneticSolver:
 
     def find_leader(self):
         self.__leaders.append(max(self.__population, key=lambda x: x[1])[0])
-        print('Лидер ',self.__leaders)
 
     def check_finish(self):
         if len(self.__leaders) >= 5 and self.__leaders[-1] == self.__leaders[-2] == self.__leaders[-3] == self.__leaders[-4] == self.__leaders[-5]:
@@ -80,8 +80,6 @@ class GeneticSolver:
         for i in range(len(leader)):
             if leader[i] == '1':
                 items.append(i)
-        print("Решение")
-        print({"cost": cost, "items": items})
         return {"cost": cost, "items": items}
 
     def mutation(self, population, item) -> str:
@@ -153,12 +151,19 @@ class GeneticSolver:
     def find_parents(self):
         competitors = copy.deepcopy(self.__population)
         winners = []
-        while len(winners) < len(self.population) // 2:  # отбираем половину популяции
-            winner = tournament(list(competitors),
+        l = self.__population_cnt
+        while len(winners) < len(self.population) // 2:
+            comp = []
+            for i in range(2):
+                random_n = random.randint(0, l - 1)
+                comp.append(competitors[random_n])
+                competitors.pop(random_n)
+                l -= 1
+            winner = tournament(list(comp),
                                 lambda x, y: x if self.find_fitness_function(x) > self.find_fitness_function(y) else y)
             winners.append(winner)
-            competitors.remove(winner)
         """print(f"Родители, {len(winners)} {winners}")"""
+        self.__parents = winners
         return winners
 
     def weight_check(self, item):
