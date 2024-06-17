@@ -25,7 +25,7 @@ graph LR
 ```
 
 
-Матрица смежности: 
+Матрица смежности - matrix_init: 
 
 |       | **0** | **1** | **2** | **3** |
 |:------|:-----:|:-----:|:-----:|:-----:|
@@ -57,6 +57,27 @@ matrix_0[a][b] = min(matrix_init[a,b], matrix_init[a][0] + matrix_init[0][b])
 | **1** | **∞** |   0   |   3   | **∞** |
 | **2** | **∞** | **∞** |   0   |   1   |
 | **3** | **∞** | **∞** | **∞** |   0   |
+
+matrix_0[1][1] = min(matrix_init[1,1], matrix_init[1][0] + matrix_init[0][1])
+matrix_0[1][1] = min(0, **∞** + 5) = 0
+matrix_0[1][2] = min(matrix_init[1,2], matrix_init[1][0] + matrix_init[0][2])
+matrix_0[1][2] = min(3, **∞** + **∞**) = 3
+matrix_0[1][3] = min(matrix_init[1,3], matrix_init[1][0] + matrix_init[0][3])
+matrix_0[1][3] = min(**∞**, **∞** + 10) = **∞**
+
+matrix_0[2][1] = min(matrix_init[2,1], matrix_init[2][0] + matrix_init[0][1])
+matrix_0[2][1] = min(**∞**, **∞** + **∞**) = **∞**
+matrix_0[2][2] = min(matrix_init[2,2], matrix_init[2][0] + matrix_init[0][2])
+matrix_0[2][2] = min(0, **∞** + **∞**) = 0
+matrix_0[2][3] = min(matrix_init[2,3], matrix_init[2][0] + matrix_init[0][3])
+matrix_0[2][3] = min(1, **∞** + 10) = 1
+
+matrix_0[3][1] = min(matrix_init[3,1], matrix_init[3][0] + matrix_init[0][1])
+matrix_0[3][1] = min(**∞**, **∞** + 5) = **∞**
+matrix_0[3][2] = min(matrix_init[3,2], matrix_init[3][0] + matrix_init[0][2])
+matrix_0[3][2] = min(**∞**, **∞** + **∞**) = 0
+matrix_0[3][3] = min(matrix_init[3,3], matrix_init[3][0] + matrix_init[0][3])
+matrix_0[3][3] = min(1, **∞** + 10) = 1
 
 #### Matrix_1
 
