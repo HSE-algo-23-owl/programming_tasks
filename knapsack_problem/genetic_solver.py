@@ -108,7 +108,7 @@ class GeneticSolver:
     def make_new_population(self):
         prev = sorted(self.__prev_pop_w_children, key=lambda x: x[1], reverse=True)
         self.__population = prev[0:int(self.__population_cnt)]
-        """print("Новое поколение", len(self.__population), self.__population)"""
+
 
     def find_children(self):
         children = []
@@ -136,7 +136,7 @@ class GeneticSolver:
                 parents_w_children.append((s_child, self.find_fitness_function(s_child)))
                 children.append((s_child, self.find_fitness_function(s_child)))
         self.__prev_pop_w_children = parents_w_children
-        """print(children)"""
+
         return parents_w_children
 
     def find_fitness_function(self, item) -> int:
@@ -162,7 +162,7 @@ class GeneticSolver:
             winner = tournament(list(comp),
                                 lambda x, y: x if self.find_fitness_function(x) > self.find_fitness_function(y) else y)
             winners.append(winner)
-        """print(f"Родители, {len(winners)} {winners}")"""
+
         self.__parents = winners
         return winners
 
@@ -201,7 +201,7 @@ class GeneticSolver:
                 attempt += 1
         if len(population) < self.__population_cnt:
             self.__population_cnt = len(population)
-        """print(f"Первое поколение {len(population)}", population)"""
+
         return population
 
 
