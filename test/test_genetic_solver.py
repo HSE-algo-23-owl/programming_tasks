@@ -40,6 +40,9 @@ class TestGeneticSolver(unittest.TestCase):
                                                  result))
             if result[COST] == brute_force(weights, costs, weight_limit)[COST]:
                 right_answer_cnt += 1
+                print("Решение совпало  ", right_answer_cnt)
+            else:
+                print("Не совпало")
         self.assertTrue(right_answer_cnt >= 19)
 
     def test_random_large(self):

@@ -37,6 +37,8 @@ class GeneticSolver:
         self.__population_cnt = min(2 ** self.__item_cnt / 2, POPULATION_LIMIT)
         self.__population = self.__generate_population(self.__population_cnt)
         self.__parents = self.find_parents()
+        self.__prev_pop_w_children = self.find_children()
+        self.__leaders = []
 
     @property
     def population(self) -> list[tuple[str, int]]:
@@ -44,6 +46,15 @@ class GeneticSolver:
         возвращается строка из 0 и 1, а также значение финтес-функции.
         """
         return self.__population
+
+    def find_leader(self):
+        self.__leaders.append(max(self.__population, key=lambda x: x[1])[0])
+        print('Лидер ',self.__leaders)
+
+    def check_finish(self):
+        if len(self.__leaders) >= 5 and self.__leaders[-1] == self.__leaders[-2] == self.__leaders[-3] == self.__leaders[-4] == self.__leaders[-5]:
+            return True
+        return False
 
     def get_knapsack(self, epoch_cnt=EPOCH_CNT) -> dict[str, int | list[int]]:
         """Запускает генетический алгоритм для решения задачи о рюкзаке.
@@ -55,31 +66,56 @@ class GeneticSolver:
         """
         if len(self.__weights) <= BRUTE_FORCE_BOUND:
             return brute_force(self.__weights, self.__costs, self.__weight_limit)  # Решение перебором
-        children = self.find_children()
+
+        while not self.check_finish():
+            self.find_parents()
+            self.find_children()
+            self.make_new_population()
+            self.find_leader()
+
+        leader = self.__leaders[-1]
+        cost = self.find_fitness_function(leader)
+        items = []
+        for i in range(len(leader)):
+            if leader[i] == '1':
+                items.append(i)
+        print("Решение")
+        print({"cost": cost, "items": items})
+        return {"cost": cost, "items": items}
 
     def mutation(self, population, item) -> str:
         """Мутирует особь так, чтобы новая особь не существовала в популяции и её вес предметов не превышал лимит
         рюкзака"""
-        while not (self.weight_check(item)) or any(tuple[0] == item for tuple in population):
-            while not (self.weight_check(item)):
-                index = rnd.randint(0, len(weights) - 1)
+        attempt1 = 0
+        while (not (self.weight_check(item)) or any(tuple[0] == item for tuple in population)) and attempt1 < 10:
+            attempt1 += 1
+            attempt2, attempt3 = 0, 0
+            while not (self.weight_check(item)) and attempt2 < 10:
+                index = rnd.randint(0, len(self.__weights) - 1)
                 if item[index] == '1':
                     item = item[:index] + "0" + item[index + 1:]
-            while any(tuple[0] == item for tuple in population):
-
-                index = rnd.randint(0, len(weights)-1)
+                attempt2 += 1
+            while any(tuple[0] == item for tuple in population) and attempt3 < 10:
+                index = rnd.randint(0, len(self.__weights) - 1)
                 if item[index] == '1':
                     item = item[:index] + "0" + item[index + 1:]
                 else:
                     item = item[:index] + "1" + item[index + 1:]
-        print(item)
+                attempt3 += 1
+        if not (self.weight_check(item)) or any(tuple[0] == item for tuple in population):
+            return ''
         return item
+
+    def make_new_population(self):
+        prev = sorted(self.__prev_pop_w_children, key=lambda x: x[1], reverse=True)
+        self.__population = prev[0:int(self.__population_cnt)]
+        """print("Новое поколение", len(self.__population), self.__population)"""
 
     def find_children(self):
         children = []
         parents = copy.deepcopy(self.__parents)
         parents_w_children = copy.deepcopy(self.__population)
-        while parents:
+        while len(parents)>1:
             f = parents.pop(0)
             s = parents.pop(0)
             numbers = ['0', '1']
@@ -93,13 +129,16 @@ class GeneticSolver:
                     f_child += s[0][j]
                     s_child += f[0][j]
             f_child = self.mutation(parents_w_children, f_child)
-            parents_w_children.append((f_child, self.find_fitness_function(f_child)))
-            children.append((f_child, self.find_fitness_function(f_child)))
+            if f_child != '':
+                parents_w_children.append((f_child, self.find_fitness_function(f_child)))
+                children.append((f_child, self.find_fitness_function(f_child)))
             s_child = self.mutation(parents_w_children, s_child)
-            parents_w_children.append((s_child, self.find_fitness_function(s_child)))
-            children.append((s_child, self.find_fitness_function(s_child)))
-        print("Дети")
-        print(len(children), children)
+            if s_child != '':
+                parents_w_children.append((s_child, self.find_fitness_function(s_child)))
+                children.append((s_child, self.find_fitness_function(s_child)))
+        self.__prev_pop_w_children = parents_w_children
+        """print(children)"""
+        return parents_w_children
 
     def find_fitness_function(self, item) -> int:
         """Находит фитнес-функцию особи.
@@ -118,7 +157,7 @@ class GeneticSolver:
                                 lambda x, y: x if self.find_fitness_function(x) > self.find_fitness_function(y) else y)
             winners.append(winner)
             competitors.remove(winner)
-        print(f"Родители, {len(winners)} {winners}")
+        """print(f"Родители, {len(winners)} {winners}")"""
         return winners
 
     def weight_check(self, item):
@@ -140,7 +179,8 @@ class GeneticSolver:
         numbers = ['0', '1']
         population = []
         cnt = 0
-        while cnt < self.__population_cnt:
+        attempt = 0
+        while cnt < self.__population_cnt and attempt < __population_cnt * 10:
             child = ''
             fitness_function = 0
             for j in range(len(self.__weights)):
@@ -148,9 +188,14 @@ class GeneticSolver:
                 child += r
                 if r == '1':
                     fitness_function += self.__costs[j]
-            if child not in population or self.weight_check(child):
+            if not any(tuple[0] == child for tuple in population) and self.weight_check(child):
                 population.append((child, fitness_function))
                 cnt += 1
+            else:
+                attempt += 1
+        if len(population) < self.__population_cnt:
+            self.__population_cnt = len(population)
+        """print(f"Первое поколение {len(population)}", population)"""
         return population
 
 
