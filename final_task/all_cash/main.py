@@ -60,11 +60,20 @@ def printSolution(dist) -> None:
 
 
 if __name__ == "__main__":
-    graph = [[0, 5, INF, 10],
-                  [INF, 0, 3, INF],
-                  [INF, INF, 0, 1],
-                  [INF, INF, INF, 0]
-                  ]
+    graph = [
+    [0, 2, INF, INF, INF, INF, INF, INF, INF, INF, INF, INF],
+    [2, 0, 3, INF, INF, INF, INF, INF, INF, INF, INF, INF],
+    [INF, 3, 0, 1, INF, INF, INF, INF, INF, INF, INF, INF],
+    [INF, INF, 1, 0, 2, INF, INF, INF, INF, INF, INF, INF],
+    [INF, INF, INF, 2, 0, 3, INF, INF, INF, INF, INF, INF],
+    [INF, -10, INF, INF, 3, 0, 4, INF, INF, INF, INF, INF],
+    [INF, INF, INF, INF, INF, 4, 0, 5, INF, INF, INF, INF],
+    [INF, INF, INF, INF, INF, INF, 5, 0, 6, INF, INF, INF],
+    [INF, INF, INF, INF, INF, INF, INF, 6, 0, 7, INF, INF],
+    [INF, INF, INF, INF, INF, INF, INF, INF, 7, 0, 1, INF],
+    [INF, INF, INF, INF, INF, INF, INF, INF, INF, 1, 0, 2],
+    [INF, INF, INF, INF, INF, INF, INF, INF, INF, INF, 2, 0]
+]
 
     result = floydWarshall(graph)
     print("Матрица кратчайших расстояний:")
