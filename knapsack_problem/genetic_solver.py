@@ -35,7 +35,7 @@ class GeneticSolver:
         self.__weights = weights
         self.__costs = costs
         self.__weight_limit = weight_limit
-        self.__population_cnt = min(2 ** self.__item_cnt / 2, POPULATION_LIMIT)
+        self.__population_cnt = int(min(2 ** self.__item_cnt / 2, POPULATION_LIMIT))
         self.__population = self.__generate_population(self.__population_cnt)
         self.__parents = self.find_parents()
         self.__prev_pop_w_children = self.find_children()
