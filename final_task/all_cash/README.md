@@ -49,7 +49,8 @@ matrix_0[a][b] = min(matrix_init[a,b], matrix_init[a][0] + matrix_init[0][b])
 После выполнения алгоритма для вершины 0 matrix_init заменяется на matrix_0 и мы ищем уже matrix_1 для первой вершины.
 Выполняем алгоритм для всех вершин.
 
-####  Решение для Matrix_0
+####  Решение Подробное решение для Matrix_0
+Мы не рассматриваем те ячейки, которые заканчиваются в 0 вершине
 
 matrix_0[1][1] = min(matrix_init[1,1], matrix_init[1][0] + matrix_init[0][1])
 matrix_0[1][1] = min(0, **∞** + 5) = 0
@@ -80,27 +81,7 @@ matrix_0[3][3] = min(0, **∞** + 10) = 0
 | **2** | **∞** | **∞** |   0   |   1   |
 | **3** | **∞** | **∞** | **∞** |   0   |
 
-####  Решение для Matrix_1
-matrix_0[0][0] = min(matrix_init[0,0], matrix_init[0][1] + matrix_init[1][0])
-matrix_0[0][0] = min(0, 5 + **∞** ) = 0
-matrix_0[0][2] = min(matrix_init[0,2], matrix_init[0][1] + matrix_init[1][2])
-matrix_0[0][2] = min(**∞**, 5 + 3) = **8**
-matrix_0[0][3] = min(matrix_init[0,3], matrix_init[0][1] + matrix_init[1][3])
-matrix_0[0][3] = min(10, 5 + **∞**) = 10
-
-matrix_0[2][0] = min(matrix_init[2,0], matrix_init[2][1] + matrix_init[1][0])
-matrix_0[2][0] = min(**∞**,**∞** + **∞** ) = **∞**
-matrix_0[2][2] = min(matrix_init[2,2], matrix_init[2][1] + matrix_init[1][2])
-matrix_0[2][2] = min(0,**∞**  + 3) = 0
-matrix_0[2][3] = min(matrix_init[2,3], matrix_init[2][1] + matrix_init[1][3])
-matrix_0[2][3] = min(1, **∞** + **∞**) = 1
-
-matrix_0[3][0] = min(matrix_init[3,0], matrix_init[3][1] + matrix_init[1][0])
-matrix_0[3][0] = min(**∞**,**∞** + **∞** ) = **∞**
-matrix_0[3][2] = min(matrix_init[3,2], matrix_init[3][1] + matrix_init[1][2])
-matrix_0[3][2] = min(**∞**,**∞**  + 3) = **∞**
-matrix_0[3][3] = min(matrix_init[3,3], matrix_init[3][1] + matrix_init[1][3])
-matrix_0[3][3] = min(0, **∞** + **∞**) = 0
+По такому же принципу найдем Matrix_1, Matrix_2, Matrix_3
 
 #### Matrix_1
 
@@ -111,27 +92,7 @@ matrix_0[3][3] = min(0, **∞** + **∞**) = 0
 | **2** | **∞** | **∞** |   0   |   1   |
 | **3** | **∞** | **∞** | **∞** |   0   |
 
-####  Решение для Matrix_2
-matrix_0[0][0] = min(matrix_init[0,0], matrix_init[0][2] + matrix_init[2][0])
-matrix_0[0][0] = min(0, 5 + **∞** ) = 0
-matrix_0[0][1] = min(matrix_init[0,1], matrix_init[0][2] + matrix_init[2][1])
-matrix_0[0][1] = min(**∞**, 5 + 3) = **8**
-matrix_0[0][3] = min(matrix_init[0,3], matrix_init[0][2] + matrix_init[2][3])
-matrix_0[0][3] = min(10, 5 + **∞**) = 10
 
-matrix_0[0][0] = min(matrix_init[0,0], matrix_init[0][2] + matrix_init[2][0])
-matrix_0[0][0] = min(0, 5 + **∞** ) = 0
-matrix_0[0][1] = min(matrix_init[0,1], matrix_init[0][2] + matrix_init[2][1])
-matrix_0[0][1] = min(**∞**, 5 + 3) = **8**
-matrix_0[0][3] = min(matrix_init[0,3], matrix_init[0][2] + matrix_init[2][3])
-matrix_0[0][3] = min(10, 5 + **∞**) = 10
-
-matrix_0[0][0] = min(matrix_init[0,0], matrix_init[0][2] + matrix_init[2][0])
-matrix_0[0][0] = min(0, 5 + **∞** ) = 0
-matrix_0[0][1] = min(matrix_init[0,1], matrix_init[0][2] + matrix_init[2][1])
-matrix_0[0][1] = min(**∞**, 5 + 3) = **8**
-matrix_0[0][3] = min(matrix_init[0,3], matrix_init[0][2] + matrix_init[2][3])
-matrix_0[0][3] = min(10, 5 + **∞**) = 10
 #### Matrix_2
 
 |       | **0** | **1** | **2** | **3** |
@@ -149,3 +110,6 @@ matrix_0[0][3] = min(10, 5 + **∞**) = 10
 | **1** | **∞** |   0   |   3   |   4   |
 | **2** | **∞** | **∞** |   0   |   1   |
 | **3** | **∞** | **∞** | **∞** |   0   |
+
+Matrix_3 - наша конечная  матрица, которая является ответом.
+По главной диагонали нет отрицательных чисел. Значит, что циклов отрицательной длины нету
