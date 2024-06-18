@@ -1,40 +1,63 @@
+from typing import TypeVar
+
+T = TypeVar('T')
+
+
 class HeapSort:
-    @staticmethod
-    def sort(lst):
-        HeapSort.create_heap(lst)
-        for i in range(1, len(lst)):
-            lst[0], lst[len(lst)-i] = lst[len(lst)-i], lst[0]
-            HeapSort.sift_down(lst, len(lst)-i, 0)
+    """Класс, реализующий пирамидальную сортировку."""
+    @classmethod
+    def __create_heap(cls, data_list: list[T]) -> None:
+        """Создает бинарную кучу "на месте" методом перестановки элементов.
 
-    @staticmethod
-    def create_heap(lst):
-        n = len(lst)
-        for i in range(n // 2 - 1, -1, -1):
-            HeapSort.sift_down(lst, len(lst), i)
+        :param data_list: Список элементов.
+        """
+        length = len(data_list)
+        for idx in range(length // 2 - 1, -1, -1):
+            cls.__sift_down(data_list, length, idx)
 
-    @staticmethod
-    def sift_down(lst, n, i):
-        left = 2*i + 1
-        right = 2*i + 2
+    @classmethod
+    def __sift_down(cls, data_list: list[T], length: int, idx: int) -> None:
+        """Просеивает минимальные элементы вниз, поддерживает свойство кучи.
 
-        max_idx = left
+        :param data_list: Список элементов.
+        :param length: Длина списка.
+        :param length: Индекс текущего элемента.
+        """
+        left_idx = 2 * idx + 1
+        right_idx = 2 * idx + 2
 
-        if left >= n:
+        max_idx = left_idx
+
+        if left_idx >= length:
             return
+        try:
+            if right_idx < length and data_list[max_idx] < data_list[right_idx]:
+                max_idx = right_idx
 
-        if right < n and lst[max_idx] < lst[right]:
-            max_idx = right
+            if data_list[idx] < data_list[max_idx]:
+                data_list[idx], data_list[max_idx] = data_list[max_idx], data_list[idx]
+                cls.__sift_down(data_list, length, max_idx)
+        except TypeError as e:
+            raise TypeError(
+                    f"'<' not supported between instances of '{type(data_list[max_idx]).__name__}' and '{type(data_list[idx]).__name__}'")
 
-        if lst[i] < lst[max_idx]:
-            lst[i], lst[max_idx] = lst[max_idx], lst[i]
-            HeapSort.sift_down(lst, n, max_idx)
+    @classmethod
+    def sort(cls, data_list: list[T]) -> None:
+        """Сортирует элементы списка..
 
+        :param data_list: Список элементов.
+        """
+        cls.__create_heap(data_list)
 
+        length = len(data_list)
+        for i in range(1, length):
+            data_list[0], data_list[length-i] = data_list[length-i], data_list[0]
+            cls.__sift_down(data_list, length-i, 0)
 
 
 def main():
     lst = [5, 8, 1, 4, -7, 6, 12, 19, -6]
-    HeapSort.sort(lst)
+    HeapSort().sort(lst)
     print(lst)
 
 

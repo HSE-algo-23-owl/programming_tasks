@@ -72,16 +72,19 @@ class HeapTest(unittest.TestCase):
                 return self.x == other.x and self.y == other.y
 
             def __lt__(self, other):
-                return self.x < other.x and self.y < other.y
+                return self.x < other.x
 
             def __gt__(self, other):
-                return self.x > other.x and self.y > other.y
+                return self.x > other.x
 
             def __le__(self, other):
-                return self.x <= other.x and self.y <= other.y
+                return self.x <= other.x
 
             def __ge__(self, other):
-                return self.x >= other.x and self.y >= other.y
+                return self.x >= other.x
+
+            def __repr__(self):
+                return f"Point({self.x}, {self.y})"
 
         lst = [Point(2,3), Point(7, 7), Point(4,4), Point(10, 6)]
         HeapSort.sort(lst)
