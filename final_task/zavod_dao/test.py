@@ -1,4 +1,5 @@
-import unittesimport numpy as np
+import unittest
+import numpy as np
 
 
 class TestSimplexMethod(unittest.TestCase):
