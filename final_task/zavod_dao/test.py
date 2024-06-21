@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+from final_task.zavod_dao.main import simplex_method
 
 
 class TestSimplexMethod(unittest.TestCase):
