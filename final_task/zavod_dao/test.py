@@ -34,5 +34,14 @@ class TestSimplexMethod(unittest.TestCase):
         self.assertIsNone(solution)
         self.assertIsNone(objective)
 
+    def test_no_feasible_solution(self):
+        c = np.array([2, 3])
+        A = np.array([[1, 1], [-1, -1]])
+        b = np.array([2, -3])
+        solution, objective = simplex_method(c, A, b)
+        self.assertIsNone(solution)
+        self.assertIsNone(objective)
+        
+
 if __name__ == '__main__':
     unittest.main()
