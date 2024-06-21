@@ -1,4 +1,5 @@
 import unittest
+import numpy
 
 
 class TestSimplexMethod(unittest.TestCase):
