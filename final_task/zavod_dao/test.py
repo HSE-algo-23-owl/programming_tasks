@@ -41,6 +41,19 @@ class TestSimplexMethod(unittest.TestCase):
         solution, objective = simplex_method(c, A, b)
         self.assertIsNone(solution)
         self.assertIsNone(objective)
+
+    def test_large_problem(self):
+        c = np.array([4, 3, 5, 2, 1])
+        A = np.array([
+            [2, 1, 3, 2, 1],
+            [1, 2, 1, 1, 3],
+            [3, 2, 2, 1, 2],
+            [1, 1, 1, 1, 1]
+        ])
+        b = np.array([10, 8, 12, 5])
+        solution, objective = simplex_method(c, A, b)
+        np.testing.assert_array_almost_equal(solution, [0, 0, 2, 3, 0])
+        self.assertAlmostEqual(objective, 16)
         
 
 if __name__ == '__main__':
